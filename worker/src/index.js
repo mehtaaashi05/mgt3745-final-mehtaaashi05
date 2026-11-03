@@ -1,29 +1,72 @@
-// Optional: delete worker/ if the project has no backend or AI feature.
-const INSTRUCTION = "Replace with the instruction your EARS row specifies.";
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+const storage = new Map();
+
+function jsonResponse(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/json",
+    },
+  });
+}
 
 export default {
-  async fetch(request, env) {
-    const cors = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Content-Type" };
-    if (request.method === "OPTIONS") return new Response(null, { headers: cors });
-    if (request.method !== "POST") return Response.json({ error: "POST only" }, { status: 405, headers: cors });
+  async fetch(request) {
+    if (request.method === "OPTIONS") {
+      return new Response(null, { headers: corsHeaders });
+    }
 
-    let body;
-    try { body = await request.json(); }
-    catch { return Response.json({ error: "Invalid JSON" }, { status: 400, headers: cors }); }
-    const text = typeof body.text === "string" ? body.text.slice(0, 2000) : "";
-    if (!text) return Response.json({ error: "Missing text" }, { status: 400, headers: cors });
+    const url = new URL(request.url);
+    const pathname = url.pathname;
 
-    const url = `https://gateway.ai.cloudflare.com/v1/${env.CF_ACCOUNT_ID}/${env.AI_GATEWAY_ID}`
-              + `/google-ai-studio/v1/models/${env.GEMINI_MODEL}:generateContent`;
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
-      body: JSON.stringify({ contents: [{ parts: [{ text: `${INSTRUCTION}\n\n${text}` }] }] }),
-    });
-    if (!res.ok) return Response.json({ error: `Model request failed (${res.status})` }, { status: 502, headers: cors });
+    if (pathname === "/entries") {
+      if (request.method === "GET") {
+        const entries = [...storage.values()].sort((a, b) => Number(a.id) - Number(b.id));
+        return jsonResponse(entries);
+      }
 
-    const data = await res.json();
-    const output = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
-    return Response.json({ output }, { headers: cors });
+      if (request.method === "POST") {
+        let body;
+        try {
+          body = await request.json();
+        } catch {
+          return jsonResponse({ error: "Invalid JSON" }, 400);
+        }
+
+        const text = typeof body.text === "string" ? body.text.trim() : "";
+        if (!text) {
+          return jsonResponse({ error: "text required" }, 400);
+        }
+
+        if (text.length > 200) {
+          return jsonResponse({ error: "Maximum 200 characters" }, 400);
+        }
+
+        const id = String(Date.now());
+        const entry = { id, text, createdAt: new Date().toISOString() };
+        storage.set(id, entry);
+        return jsonResponse(entry, 201);
+      }
+    }
+
+    if (pathname.startsWith("/entries/")) {
+      const id = pathname.replace("/entries/", "");
+      if (request.method === "DELETE") {
+        if (!storage.has(id)) {
+          return jsonResponse({ error: "Entry not found" }, 404);
+        }
+
+        storage.delete(id);
+        return jsonResponse({ success: true });
+      }
+    }
+
+    return jsonResponse({ error: "Not found" }, 404);
   },
 };

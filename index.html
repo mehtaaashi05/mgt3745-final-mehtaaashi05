@@ -1,5 +1,55 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Project name</title></head>
-<body><main><h1>Project name</h1><p>Replace this page with your product. GitHub Pages serves it from the repository root.</p></main></body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Team Explorer Directory</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <header class="page-header">
+        <h1>Team Explorer Directory</h1>
+        <p>
+          Interns can learn what a different team does without making a formal move request.
+          Employees can opt in to a short, informational conversation.
+        </p>
+      </header>
+
+      <div class="layout">
+        <section class="panel" aria-labelledby="directory-title">
+          <h2 id="directory-title">Opt-in directory</h2>
+          <form id="directory-form">
+            <label for="directory-input">What can you talk about?</label>
+            <textarea
+              id="directory-input"
+              name="directory-input"
+              rows="4"
+              maxlength="200"
+              placeholder="Example: I can share what a day in Treasury Management looks like and answer questions about the team."
+            ></textarea>
+            <button type="submit">Save availability</button>
+          </form>
+          <p id="form-message" class="status" aria-live="polite"></p>
+          <ul id="directory-list" class="directory-list" aria-live="polite"></ul>
+        </section>
+
+        <section class="panel" aria-labelledby="guide-title">
+          <h2 id="guide-title">Line-of-business guide</h2>
+          <div id="guide-nav" class="guide-nav" aria-label="Guide area selector">
+            <button type="button" class="guide-button is-active" data-guide="Business Credit" aria-pressed="true">
+              Business Credit
+            </button>
+            <button type="button" class="guide-button" data-guide="Treasury Management" aria-pressed="false">
+              Treasury Management
+            </button>
+          </div>
+          <article id="guide-content" aria-live="polite"></article>
+        </section>
+      </div>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
 </html>
+

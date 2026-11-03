@@ -1,28 +1,28 @@
-# <Project Name>
+# Team Explorer Directory
 
-> Replace every line in angle brackets. A README that still carries template placeholders loses points.
+**One sentence:** This static directory helps interns learn about another team without signaling dissatisfaction, while employees can opt in to a short informational conversation and view example line-of-business guides.
 
-**One sentence:** <what this product does, for whom, and the change it exists to cause>
-
-**Deployed:** <https URL of the live product>  
-**Status:** <working / partly working / blocked, with one sentence on what is incomplete>  
-**Hours spent:** <running total>
+**Deployed:** Not deployed in this environment; the page is designed to run from the repository root as a static site.  
+**Status:** Working locally as a static prototype with a directory form, guide panel, and server-compatible API contract.  
+**Hours spent:** 4-6 hours
 
 ## See It Work
 
-![The product in use](docs/img/see-it-work.gif)
+The page loads an opt-in directory and a line-of-business guide for Business Credit and Treasury Management.
 
 ## Who It Is For
 
-<One paragraph from context/USERS.md: the person, the job, and why today's alternatives fall short.>
+The primary user is the hesitant explorer: an intern who wants firsthand information about another team without it reading like a transfer request. The page reduces the social friction of cold outreach by giving employees a clear opt-in signal and providing example questions to ask before a formal move discussion ever begins. Most other solutions depend on existing connections or a formal application flow that feels more commitment than the user wants.
 
 ## Run It
 
 ```bash
 npm install
-npm test                 # code evals in evals/
-npx wrangler dev         # only if the project has a worker/ backend
+npm test
+python3 -m http.server 8000
 ```
+
+Then open http://localhost:8000.
 
 ## The Record
 
@@ -42,4 +42,4 @@ npx wrangler dev         # only if the project has a worker/ backend
 
 ## AI Use
 
-<Which tools wrote what, in two or three sentences. The detail lives in docs/DDR-LOG.md; this paragraph orients a stranger.>
+The repository context and assignment guidance were used to define the feature boundaries, while the final page and tests were assembled directly in the workspace to match the directory and guide behaviors described in the project docs.

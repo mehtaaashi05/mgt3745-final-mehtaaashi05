@@ -39,6 +39,7 @@ Then open http://localhost:8000.
 | Scaffold audits | [docs/AUDIT.md](docs/AUDIT.md) |
 | Deployment notes | [docs/DEPLOY.md](docs/DEPLOY.md) |
 | Self-review with Homogenization Check | [docs/SELF-REVIEW.md](docs/SELF-REVIEW.md) |
+| Sourcing Audit | [docs/SOURCING-AUDIT.md](docs/SOURCING-AUDIT.md) |
 
 ## AI Use
 

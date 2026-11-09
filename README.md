@@ -2,8 +2,10 @@
 
 **One sentence:** This static directory helps interns learn about another team without signaling dissatisfaction, while employees can opt in to a short informational conversation and view example line-of-business guides.
 
-**Deployed:** Not deployed in this environment; the page is designed to run from the repository root as a static site.  
-**Status:** Working locally as a static prototype with a directory form, guide panel, and server-compatible API contract.  
+**Deployed URL:** None; the page has not been deployed and runs locally as a static site.
+
+**Status:** Working locally as a static prototype with a directory form, guide panel, and server-compatible API contract.
+
 **Hours spent:** 4-6 hours
 
 ## See It Work

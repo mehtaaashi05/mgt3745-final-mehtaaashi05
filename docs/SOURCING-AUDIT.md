@@ -20,7 +20,7 @@ Total: 100
 | Node.js + npm | platform | `package.json`, project test command | No |
 | Browser Web APIs (DOM, modules, Fetch, localStorage) | platform | `index.html`, `app.js` | Yes |
 | Python 3 `http.server` | platform (optional local preview) | `README.md` | No |
-| Wrangler CLI | dev package | `context/AGENTS.md`, `docs/DEPLOY.md`, `worker/wrangler.toml` | No |
+| Wrangler CLI | dev package | `context/AGENTS.md`, `worker/wrangler.toml` | No |
 | GitHub repository | platform | Git remote, README | No |
 | GitHub Codespaces | platform | `.devcontainer/devcontainer.json`, `context/TOOLS.md` | No |
 | GitHub Copilot | builder | `docs/DDR-LOG.md` | No |
@@ -30,7 +30,7 @@ Total: 100
 | Cloudflare AI Gateway setting (removed) | platform | Former `AI_GATEWAY_ID` in `worker/wrangler.toml` | No |
 | GitHub Pages (planned) | platform | `README.md`, `docs/DEPLOY.md` | No; not deployed |
 
-`npm ls --all` is empty: 0 direct and 0 transitive npm dependency packages (the root project is not a dependency). `npm audit` reported 0 vulnerabilities. `index.html` loads only the local `./app.js` module; there is no CDN script. D1 is described as the intended architecture in `context/ARCHITECTURE.md`, but the checked-in Worker uses an in-memory `Map`, has no D1 binding, and is not deployed; this audit does not treat D1 as live storage.
+`npm install` completed without warnings and audited the root project with 0 vulnerabilities. `npm ls --all` is empty: 0 direct and 0 transitive npm dependency packages (the root project is not a dependency). `index.html` loads only the local `./app.js` module; there is no CDN script. D1 is described as the intended architecture in `context/ARCHITECTURE.md`, but the checked-in Worker uses an in-memory `Map`, has no D1 binding, and is not deployed; this audit does not treat D1 as live storage.
 
 ### Evidence (each fact with its source and the date you read it)
 | Dependency | Latest version and date | Maintainers or vendor | License or terms | Limits or price | Other notes | Checked on |
@@ -78,6 +78,7 @@ Weighted total formula: `(Stability × 40 + Pricing × 25 + Institutional fit ×
 
 ### Changes Caused by This Audit
 - Removed unused `GEMINI_MODEL`, `CF_ACCOUNT_ID`, and `AI_GATEWAY_ID` placeholders from `worker/wrangler.toml`; the code did not read them and no secret or model integration existed. Commit: `853b2bf`.
+- Updated `docs/DEPLOY.md` to distinguish the localStorage prototype from the unconfigured, undeployed Worker/D1 intention.
 - Kept the package tree dependency-free; the root-only `package-lock.json` records that state.
 - The weights/Stake commit `b8c3a70` predates the evidence/scores commit `1d78da5`; this follow-up records facts checked on 2026-11-09.
 - No architecture decision was made to deploy a service. `docs/ADR-001.md` points here; `context/ARCHITECTURE.md` still describes D1 as intended, while the checked-in Worker has no D1 binding. Do not treat it as a production deployment claim.

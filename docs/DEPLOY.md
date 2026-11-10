@@ -20,3 +20,7 @@ From the repository root:
 4. Open `http://localhost:8000`.
 
 The local static server has no `/entries` API route. The page falls back to browser `localStorage`; a failed API save still shows an error because this fallback is only for the single-browser prototype.
+
+## Wrangler version
+
+Wrangler is not installed as a package dependency. If the Worker is ever deployed, run it pinned with `npx wrangler@4.159.0 <command>` (version checked 2026-11-09), not an unpinned `npx wrangler`. Upgrade deliberately by changing this version here and in `context/AGENTS.md` after reading the release notes.

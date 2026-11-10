@@ -78,7 +78,7 @@ Total: 100
 | Cloudflare AI Gateway setting (removed) | 4 | 4 | 2 | 5 | 3.75 | Hold | Unused placeholder removed in `853b2bf`; Hold reflects my judgment (do not re-add) despite the middling score. |
 | GitHub Pages (planned) | 4 | 4 | 5 | 4 | 4.20 | Assess | Suitable for a static app, but deployment and the actual URL are still pending. |
 | Microsoft Dev Container JavaScript/Node image | 4 | 5 | 5 | 4 | 4.45 | Adopt | Provides the standardized course development environment; the image is free, but the mutable Node 22 tag is less reproducible than a pinned digest. |
-| Live Server VS Code extension | 4 | 5 | 5 | 5 | 4.60 | Trial | Useful for local development, but it is optional and the documented Python HTTP server provides a simple fallback. |
+| Live Server VS Code extension | 4 | 5 | 5 | 5 | 4.60 | Assess | Useful for local development, but it is optional and the documented Python HTTP server provides a simple fallback. |
 | `xdg-utils` | 4 | 5 | 4 | 5 | 4.40 | Adopt | A standard development-container utility with no application runtime dependency; can be reinstalled or replaced if the container changes. |
 | `unzip` | 5 | 5 | 5 | 5 | 5.00 | Adopt | A widely used archive utility with no application runtime dependency and a straightforward replacement or reinstall path. |
 | bolt.new (StackBlitz) | 3 | 4 | 3 | 5 | 3.55 | Hold | Used only for historical F-04 generation; generated code was reviewed and integrated, so the project does not need to rely on the builder again. |

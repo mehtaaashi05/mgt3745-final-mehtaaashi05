@@ -2,6 +2,12 @@
 
 Decisionns, in order. An ADR is never edited after it is accepted; it is superseded.
 
+## Current implementation status (2026-11-09)
+
+ADR-002 records the intended durable architecture: the static frontend sends directory requests to a Cloudflare Worker, and the Worker validates requests and reads/writes entries in a bound Cloudflare D1 database using parameterized SQL. The current checked-in Worker is not that implementation: `worker/src/index.js` stores entries in an in-memory `Map`, and `worker/wrangler.toml` has no D1 database binding. There is no configured D1 database or deployed Worker, so data is not durable or shared through Cloudflare in the current repository. Treat ADR-002 as the architectural decision, not evidence that it has been implemented or deployed.
+
+Before deploying the D1 architecture, add and verify the D1 schema and Wrangler binding, implement the Worker queries with prepared statements and bound user values, test the API against that database, configure the frontend API endpoint, and document the deployed URL. Until those steps are complete, the supported local prototype uses the browser `localStorage` fallback. See the [Sourcing Audit](../docs/SOURCING-AUDIT.md) and [Deployment Notes](../docs/DEPLOY.md) for the current inventory and deployment status.
+
 ## The Gate: HW4 rerun
 
 Where should entries live now that they must survive a cleared cache?

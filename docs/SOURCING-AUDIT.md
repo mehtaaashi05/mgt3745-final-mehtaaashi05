@@ -79,6 +79,7 @@ Weighted total formula: `(Stability × 40 + Pricing × 25 + Institutional fit ×
 ### Changes Caused by This Audit
 - Removed unused `GEMINI_MODEL`, `CF_ACCOUNT_ID`, and `AI_GATEWAY_ID` placeholders from `worker/wrangler.toml`; the code did not read them and no secret or model integration existed. Commit: `853b2bf`.
 - Updated `docs/DEPLOY.md` to distinguish the localStorage prototype from the unconfigured, undeployed Worker/D1 intention.
+- Updated `context/TOOLS.md` with dated limits, pricing, rings, and exits; clarified the intended-versus-current D1 state in `context/ARCHITECTURE.md`.
 - Kept the package tree dependency-free; the root-only `package-lock.json` records that state.
 - The weights/Stake commit `b8c3a70` predates the evidence/scores commit `1d78da5`; this follow-up records facts checked on 2026-11-09.
 - No architecture decision was made to deploy a service. `docs/ADR-001.md` points here; `context/ARCHITECTURE.md` still describes D1 as intended, while the checked-in Worker has no D1 binding. Do not treat it as a production deployment claim.

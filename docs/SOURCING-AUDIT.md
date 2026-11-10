@@ -97,7 +97,7 @@ Weighted total formula: `(Stability × 40 + Pricing × 25 + Institutional fit ×
 
 ### Changes Caused by This Audit
 - Removed unused `GEMINI_MODEL`, `CF_ACCOUNT_ID`, and `AI_GATEWAY_ID` placeholders from `worker/wrangler.toml`; the code did not read them and no secret or model integration existed. Commit: `853b2bf`.
-- Removed the deprecated `bierner.markdown-mermaid` extension from `.devcontainer/devcontainer.json`; VS Code 1.121 (released 2026-05-20) now includes Mermaid preview. [Marketplace deprecation notice](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid), [VS Code 1.121 release notes](https://code.visualstudio.com/updates/v1_121). No project functionality or runtime dependency used that extension.
+- Removed the deprecated `bierner.markdown-mermaid` extension from `.devcontainer/devcontainer.json` in commit `ba6d9e3`; VS Code 1.121 (released 2026-05-20) now includes Mermaid preview. [Marketplace deprecation notice](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid), [VS Code 1.121 release notes](https://code.visualstudio.com/updates/v1_121). No project functionality or runtime dependency used that extension.
 - Updated `docs/DEPLOY.md` to distinguish the localStorage prototype from the unconfigured, undeployed Worker/D1 intention.
 - Updated `context/TOOLS.md` with dated limits, pricing, rings, and exits; clarified the intended-versus-current D1 state in `context/ARCHITECTURE.md`.
 - Kept the package tree dependency-free; the root-only `package-lock.json` records that state.

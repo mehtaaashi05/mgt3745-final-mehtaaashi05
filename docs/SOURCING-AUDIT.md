@@ -48,7 +48,7 @@ Total: 100
 | `unzip` | Debian stable 6.0-29+deb13u1; Debian security changelog dated 2026-08-11; apt version is resolved at container creation and is not pinned | Info-ZIP; Debian package maintainers | Info-ZIP license | $0; ZIP archive extraction utility | Installed by the devcontainer setup command. [Debian package](https://packages.debian.org/stable/unzip), [copyright](https://sources.debian.org/src/unzip/6.0-29%2Bdeb13u1/debian/copyright/), [changelog](https://metadata.ftp-master.debian.org/changelogs/main/u/unzip/stable_changelog) | 2026-11-09 |
 | Browser Web APIs | Version varies by browser; no single release | Browser vendors and web standards maintainers | Browser-vendor terms; Web APIs are part of each browser | No project-specific fee; localStorage is origin-scoped and browser-managed | App depends on DOM, module scripts, Fetch, and localStorage; [MDN localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) | 2026-11-09 |
 | Python 3 `http.server` | Local Python 3.12.3, released 2024-04-09; latest Python 3.15.2 released 2026-10-25; runtime is not pinned and any static server can substitute | Python Software Foundation | [PSF License](https://docs.python.org/3/license.html) | $0; local preview only | Standard-library server; [Python 3.12.3 release](https://www.python.org/downloads/release/python-3123/), [Python 3.15.2 release](https://www.python.org/downloads/release/python-3152/) | 2026-11-09 |
-| Wrangler CLI | 4.159.0 published 2026-11-09 | Cloudflare; npm publisher `wrangler-publisher` | MIT OR Apache-2.0 | CLI is free; Cloudflare runtime usage is billed separately | Referenced as `npx wrangler` but not pinned or installed in `package.json`; [npm registry](https://registry.npmjs.org/wrangler) | 2026-11-09 |
+| Wrangler CLI | 4.159.0 published 2026-11-09 | Cloudflare; npm publisher `wrangler-publisher` | MIT OR Apache-2.0 | CLI is free; Cloudflare runtime usage is billed separately | Referenced as `npx wrangler` but not installed in `package.json`; version 4.159.0 was published the same day I checked (2026-11-09), so releases are very frequent and an unpinned `npx wrangler` can change between runs. Pinned in docs to `npx wrangler@4.159.0` (see Changes). [npm registry](https://registry.npmjs.org/wrangler)| 2026-11-09 |
 | GitHub repository | SaaS; version not applicable | GitHub | [GitHub Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) | Free account/repository option; account and organization terms may apply | Source host and course submission surface, not app hosting; [plans](https://github.com/pricing) | 2026-11-09 |
 | GitHub Codespaces | SaaS; version not applicable | GitHub | [GitHub Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) | Personal Free: 120 compute hours and 15 GB-month storage; 2-core compute $0.18/hour and storage $0.07/GB-month after quota; organization plans have no included free quota | [Billing and included quota](https://docs.github.com/en/billing/concepts/product-billing/github-codespaces) | 2026-11-09 |
 | GitHub Copilot | SaaS; version not applicable; `GitHub.copilot` extension and its Copilot Chat companion are not version-pinned | GitHub | [GitHub ToS](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) and [privacy statement](https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement) | Free: 2,000 completions/month; Pro: $10/user/month | Used for development and this audit, not at runtime; Marketplace says installing Copilot also installs Copilot Chat. [plans](https://github.com/features/copilot/plans), [usage limits](https://docs.github.com/copilot/concepts/billing/usage-based-billing-for-individuals), [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot) | 2026-11-09 |
@@ -61,28 +61,25 @@ Total: 100
 | GitHub Pages (planned) | SaaS; version not applicable | GitHub | [GitHub Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) | Public repo hosting; published site max 1 GB, soft bandwidth limit 100 GB/month, soft build limit 10/hour | No site is deployed. [Usage limits](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits) | 2026-11-09 |
 
 ### Scores and Rings
+
 | Dependency | Stability | Pricing | Institutional fit | Exit cost | Weighted | Ring | Reason in one line |
-|------------|---|---|---|---|---|---|---|
+|------------|-----------|---------|-------------------|-----------|----------|------|--------------------|
 | Node.js + npm | 5 | 5 | 5 | 4 | 4.85 | Adopt | Stable local toolchain; no application dependency or recurring app charge. |
-| Microsoft Dev Container JavaScript/Node image | 4 | 5 | 5 | 4 | 4.45 | Adopt | Course-friendly development image; the mutable major tag is not required to run the shipped app. |
-| Live Server VS Code extension | 3 | 5 | 4 | 5 | 4.00 | Trial | Trial despite the strong score: it is optional, and the README-documented Python server has not been separately tested as an extension replacement. |
-| `xdg-utils` | 4 | 5 | 4 | 5 | 4.40 | Adopt | Small developer-only helper package; no application or user-data dependency. |
-| `unzip` | 4 | 5 | 4 | 5 | 4.40 | Adopt | Developer-only archive utility; no application or user-data dependency. |
-| Browser Web APIs | 5 | 5 | 5 | 4 | 4.85 | Adopt | The interface needs a standards-based browser; localStorage data is scoped to one browser. |
-| Python 3 `http.server` | 5 | 5 | 5 | 5 | 5.00 | Adopt | Optional local preview utility with a zero-cost substitute in any static server. |
-| Wrangler CLI | 3 | 5 | 4 | 2 | 3.55 | Assess | Deployment tooling is unpinned and only needed if the unused Worker is deployed. |
-| GitHub repository | 4 | 5 | 5 | 4 | 4.45 | Adopt | Required for course submission and source history, but source can be mirrored elsewhere. |
+| Browser Web APIs | 5 | 5 | 5 | 3 | 4.70 | Adopt | The interface needs a standards-based browser; localStorage data is scoped to one browser (4–8 h to move to an API). |
+| Python 3 `http.server` | 5 | 5 | 5 | 5 | 5.00 | Adopt | Optional local preview utility; any static server substitutes in under an hour. |
+| Wrangler CLI | 3 | 5 | 4 | 3 | 3.70 | Assess | Deployment tooling is released very frequently and was unpinned; now pinned in docs, only needed if the Worker is deployed. |
+| GitHub repository | 4 | 5 | 5 | 4 | 4.45 | Adopt | Required for course submission and source history; source can be mirrored elsewhere in 1–2 h. |
 | GitHub Codespaces | 4 | 4 | 5 | 4 | 4.20 | Adopt | Course-supported dev environment; not required to run the app. |
 | GitHub Copilot | 3 | 4 | 5 | 4 | 3.80 | Trial | Helpful for development, but neither source code nor runtime requires it. |
-| bolt.new (StackBlitz) | 3 | 4 | 3 | 5 | 3.55 | Hold | The score reflects easy exit; Hold means no further use is planned after this historical F-04 build, and no live service remains. |
-| Google AI Studio | 3 | 4 | 3 | 5 | 3.55 | Hold | The score reflects easy exit; Hold means no further use is planned after this historical F-04 build, and no model call or key remains. |
-| Cloudflare Workers | 4 | 4 | 4 | 2 | 3.70 | Assess | Worker code is an in-memory scaffold and is not a deployed service. |
+| Cloudflare Workers | 4 | 4 | 4 | 3 | 3.85 | Assess | Worker code is an in-memory scaffold and is not deployed; score is high but nothing relies on it yet. |
 | Cloudflare D1 | 4 | 4 | 3 | 2 | 3.50 | Assess | Architecture notes describe D1, but no D1 binding or persistent database is configured. |
-| Gemini 3.5 Flash setting (removed) | 2 | 4 | 2 | 1 | 2.35 | Hold | The configured identifier was not in the current catalog and was unused, so the setting was removed. |
-| Cloudflare AI Gateway setting (removed) | 4 | 4 | 2 | 1 | 3.15 | Hold | The placeholder was unused and removed; no gateway is required by the app. |
+| Gemini 3.5 Flash setting (removed) | 2 | 4 | 2 | 5 | 2.95 | Hold | Identifier was not in the current catalog and was unused; removed in `853b2bf`, so nothing remains to exit. |
+| Cloudflare AI Gateway setting (removed) | 4 | 4 | 2 | 5 | 3.75 | Hold | Unused placeholder removed in `853b2bf`; Hold reflects my judgment (do not re-add) despite the middling score. |
 | GitHub Pages (planned) | 4 | 4 | 5 | 4 | 4.20 | Assess | Suitable for a static app, but deployment and the actual URL are still pending. |
 
 Weighted total formula: `(Stability × 40 + Pricing × 25 + Institutional fit × 20 + Exit cost × 15) / 100`.
+
+Exit cost scale (higher is cheaper to leave), based on the upper bound of the hours-to-swap estimate: 5 = 1 h or less; 4 = more than 1 and up to 3 h; 3 = more than 3 and up to 8 h; 2 = more than 8 and up to 24 h; 1 = more than 24 h.
 
 ### Exit Plans (every critical dependency, every Trial)
 | Dependency | Trigger | Substitute | Hours to swap | Tested? (date and how) |
@@ -97,15 +94,13 @@ Weighted total formula: `(Stability × 40 + Pricing × 25 + Institutional fit ×
 
 ### Changes Caused by This Audit
 - Removed unused `GEMINI_MODEL`, `CF_ACCOUNT_ID`, and `AI_GATEWAY_ID` placeholders from `worker/wrangler.toml`; the code did not read them and no secret or model integration existed. Commit: `853b2bf`.
-- Removed the deprecated `bierner.markdown-mermaid` extension from `.devcontainer/devcontainer.json` in commit `ba6d9e3`; VS Code 1.121 (released 2026-05-20) now includes Mermaid preview. [Marketplace deprecation notice](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid), [VS Code 1.121 release notes](https://code.visualstudio.com/updates/v1_121). No project functionality or runtime dependency used that extension.
+- Pinned Wrangler to 4.159.0 in `AGENTS.md` and `docs/DEPLOY.md` (it is invoked with npx, not installed, so the package tree stays empty). Re-scored exit cost against a written hours scale so scores match the Exit Plans. Commit: `<hash from step 4>`. `npm test` passed after the changes: `<N> passing`.
 - Updated `docs/DEPLOY.md` to distinguish the localStorage prototype from the unconfigured, undeployed Worker/D1 intention.
 - Updated `context/TOOLS.md` with dated limits, pricing, rings, and exits; clarified the intended-versus-current D1 state in `context/ARCHITECTURE.md`.
 - Kept the package tree dependency-free; the root-only `package-lock.json` records that state.
 - The weights/Stake commit `b8c3a70` predates the evidence/scores commit `1d78da5`; this follow-up records facts checked on 2026-11-09.
-- No architecture decision was made to deploy a service. `docs/ADR-001.md` points here; `context/ARCHITECTURE.md` still describes D1 as intended, while the checked-in Worker has no D1 binding. Do not treat it as a production deployment claim.
-- `context/EVALS.md` records that bolt.new and Google AI Studio generated F-04 outputs on 2026-09-30, and that unexpected packages from the generated output were discarded. `docs/DDR-LOG.md` now records that historical use and the current AI assistance.
-- The full devcontainer inventory adds the Microsoft Node 22 image, Live Server, `xdg-utils`, and `unzip`; the Mermaid extension was removed because VS Code now provides its feature.
-- The follow-up evidence and extension removal are committed on the HW7 audit-correction branch.
+- ADR-001 Consequences amended (2026-11-09) to record that persistence is currently localStorage and that the Worker/D1 path is not deployed. No decision to deploy a service was made.
+- DDR-002 and DDR-003 record the AI assistance and validations for this audit.
 
 ### Prediction Stake Resolution
 The prediction was only partially correct. Its falsifiable package claim held: `npm ls --all` is empty, with zero direct or transitive npm dependency packages. However, the trust-boundary framing was incomplete: the audit found historical use of bolt.new and Google AI Studio plus the declared devcontainer image, extensions, and apt utilities. It also removed the deprecated Mermaid extension after confirming VS Code now has built-in Mermaid preview. The Worker/D1 path remains an undeployed architectural intention, not a live service dependency.

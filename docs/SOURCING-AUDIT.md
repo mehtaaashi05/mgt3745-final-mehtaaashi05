@@ -34,7 +34,8 @@ Total: 100
 | Cloudflare D1 | platform (intended, not configured) | `context/ARCHITECTURE.md`; no binding in `worker/wrangler.toml` | No currently |
 | Gemini 3.5 Flash setting (removed) | model | Former `GEMINI_MODEL` in `worker/wrangler.toml` | No |
 | Cloudflare AI Gateway setting (removed) | platform | Former `AI_GATEWAY_ID` in `worker/wrangler.toml` | No |
-| GitHub Pages (planned) | platform | `README.md`, `docs/DEPLOY.md` | No; not deployed |
+| GitHub Pages (planned) | platform | `README.md`, `docs/DEPLOY.md` | No; not deployed 
+
 
 `npm install` completed without warnings and audited the root project with 0 vulnerabilities. `npm ls --all` is empty: 0 direct and 0 transitive npm dependency packages (the root project is not a dependency). The devcontainer separately installs two apt packages (`xdg-utils` and `unzip`), whose versions are not pinned. `index.html` loads only the local `./app.js` module; there is no CDN script. D1 is described as the intended architecture in `context/ARCHITECTURE.md`, but the checked-in Worker uses an in-memory `Map`, has no D1 binding, and is not deployed; this audit does not treat D1 as live storage.
 

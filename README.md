@@ -45,4 +45,4 @@ Then open http://localhost:8000.
 
 ## AI Use
 
-The repository context and assignment guidance were used to define the feature boundaries, while the final page and tests were assembled directly in the workspace to match the directory and guide behaviors described in the project docs.
+Historical F-04 drafts from bolt.new and Google AI Studio were reviewed and edited in the workspace; unexpected packages from the generated output were not retained. GitHub Copilot was also used for the sourcing audit. The builders are not runtime dependencies. See the [delegation log](docs/DDR-LOG.md) and [Sourcing Audit](docs/SOURCING-AUDIT.md).

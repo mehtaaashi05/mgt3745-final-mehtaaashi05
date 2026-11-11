@@ -245,7 +245,7 @@ function initDirectory() {
         downloadOptInRequest(request);
         showStatus(
           "#form-message",
-          "Request prepared locally. It has not been sent or added to the directory; share the downloaded file or copied JSON with the maintainer through an approved private channel.",
+          "Demo request prepared locally. It has not been sent or added to the directory; no approved submission channel is configured.",
           "success",
         );
         optInForm.reset();
@@ -253,7 +253,7 @@ function initDirectory() {
       } catch {
         showStatus(
           "#form-message",
-          "The request is shown below, but the file could not be created. Copy the JSON and share it with the maintainer through an approved private channel.",
+          "The demo request is shown below, but the file could not be created. It has not been submitted.",
           "error",
         );
       }

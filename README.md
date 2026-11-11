@@ -1,8 +1,8 @@
 # Team Explorer Directory
 
-**One sentence:** This static directory lets interns search fictional curated profiles and explore example line-of-business guides, while employees can prepare a local opt-in request for manual review.
+**One sentence:** This static prototype lets interns search fictional curated profiles and explore example line-of-business guides; its local opt-in request form is a demo and does not submit requests.
 
-**Deployed URL:** Pending. The GitHub Pages workflow is ready; enable Pages with the GitHub Actions source after merging, then replace this line with the verified deployment URL.
+**Deployed URL:** Pending. Pages is enabled per the repository owner's report, but no successful deployment has been verified; add the URL only after a successful workflow run.
 
 **Status:** Working locally as a static prototype with curated JSON profiles, browser-side search, a local opt-in request-file form, and a guide panel. It has no shared backend.
 
@@ -12,11 +12,13 @@
 
 The page loads fictional sample profiles from `data/directory.json` and a line-of-business guide for Business Credit and Treasury Management. Search the directory by employee name, team, or conversation topic. These sample entries do not connect interns with real employees.
 
-The opt-in form downloads a JSON request to the employee's device; it does not send the request or publish an entry. A maintainer must receive it through an approved private channel, review it, update the curated JSON file, and redeploy. Opt-outs also require a private request to the maintainer and a redeployment. The public demo uses fictional details only.
+The opt-in form only prepares a demo JSON file on the visitor's device; it does not submit a request or publish an entry. No approved private intake or opt-out channel is configured, so real opt-ins and opt-outs are not available. Do not enter real employee details. The demo uses fictional details only.
+
+No real-user search test has been completed. Automated checks use fictional data and do not establish that interns can find or contact real employees.
 
 ## Who It Is For
 
-The primary user is the hesitant explorer: an intern who wants firsthand information about another team without it reading like a transfer request. The page reduces the social friction of cold outreach by giving employees a clear opt-in signal and providing example questions to ask before a formal move discussion ever begins. Most other solutions depend on existing connections or a formal application flow that feels more commitment than the user wants.
+The intended primary user is the hesitant explorer: an intern who wants firsthand information about another team without it reading like a transfer request. The current prototype supports the search and provides example questions, but fictional profiles and the missing private opt-in process mean it does not yet connect interns with employees or provide a live employee opt-in signal.
 
 ## Run It
 

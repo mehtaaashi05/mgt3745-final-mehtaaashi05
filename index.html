@@ -12,7 +12,7 @@
         <h1>Team Explorer Directory</h1>
         <p>
           Interns can learn what a different team does without making a formal move request.
-          Employees can request to be listed for a short, informational conversation.
+          Employees can prepare a demo request file, but the form does not submit or publish it.
         </p>
       </header>
 
@@ -47,13 +47,13 @@
         <h2 id="opt-in-title">Request to opt in</h2>
         <p>
           This form creates a request file on your device only. It does not send data to a server
-          or add you to the directory. Share the downloaded file with the directory maintainer
-          through an approved private channel; the maintainer reviews requests and updates the
-          curated file.
+          or add you to the directory. No approved private submission channel is configured yet,
+          so this is a demo only and cannot enroll real employees.
         </p>
         <p class="data-notice">
           This public demo uses fictional profiles. Do not enter real personal or contact
-          information unless you have an approved private submission process.
+          information. A real opt-in and publication process requires an approved private channel
+          and maintainer review.
         </p>
         <form id="opt-in-form">
           <label for="employee-name">Name</label>
@@ -72,16 +72,17 @@
             <input name="consent" type="checkbox" required />
             I agree that the listed details may be published if the maintainer approves my request.
           </label>
-          <button type="submit">Download opt-in request</button>
+          <button type="submit">Prepare demo request</button>
         </form>
         <p id="form-message" class="status" aria-live="polite"></p>
         <label id="request-output-label" for="request-output" hidden>
-          Request JSON for private handoff (copy if the download does not start)
+          Demo request JSON (not sent or submitted)
         </label>
         <textarea id="request-output" rows="8" readonly hidden></textarea>
         <p>
-          To opt out, ask the directory maintainer to remove your entry through an approved
-          private channel. Removal requires updating and republishing the curated file.
+          No real opt-ins are active, and no private opt-out route is configured. A private removal
+          process must be approved before real profiles are published; removal would take effect
+          after the maintainer updates and republishes the JSON file.
         </p>
       </section>
     </main>

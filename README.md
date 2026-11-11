@@ -1,16 +1,18 @@
 # Team Explorer Directory
 
-**One sentence:** This static directory helps interns learn about another team without signaling dissatisfaction, while employees can opt in to a short informational conversation and view example line-of-business guides.
+**One sentence:** This static directory lets interns search fictional curated profiles and explore example line-of-business guides, while employees can prepare a local opt-in request for manual review.
 
-**Deployed URL:** None; the page has not been deployed and runs locally as a static site.
+**Deployed URL:** Pending. The GitHub Pages workflow is ready; enable Pages with the GitHub Actions source after merging, then replace this line with the verified deployment URL.
 
-**Status:** Working locally as a static prototype with a directory form, guide panel, and server-compatible API contract.
+**Status:** Working locally as a static prototype with curated JSON profiles, browser-side search, a local opt-in request-file form, and a guide panel. It has no shared backend.
 
 **Hours spent:** 4-6 hours
 
 ## See It Work
 
-The page loads an opt-in directory and a line-of-business guide for Business Credit and Treasury Management.
+The page loads fictional sample profiles from `data/directory.json` and a line-of-business guide for Business Credit and Treasury Management. Search the directory by employee name, team, or conversation topic. These sample entries do not connect interns with real employees.
+
+The opt-in form downloads a JSON request to the employee's device; it does not send the request or publish an entry. A maintainer must receive it through an approved private channel, review it, update the curated JSON file, and redeploy. Opt-outs also require a private request to the maintainer and a redeployment. The public demo uses fictional details only.
 
 ## Who It Is For
 
@@ -33,7 +35,7 @@ Then open http://localhost:8000.
 | Problem and success measures | [context/PROJECT.md](context/PROJECT.md) |
 | Users and jobs | [context/USERS.md](context/USERS.md) |
 | Features (EARS rows) | [context/FEATURES.md](context/FEATURES.md) |
-| Architecture and ADRs | [context/ARCHITECTURE.md](context/ARCHITECTURE.md), [docs/ADR-001.md](docs/ADR-001.md) |
+| Architecture and ADRs | [context/ARCHITECTURE.md](context/ARCHITECTURE.md), [docs/ADR-003.md](docs/ADR-003.md) |
 | Evals, RAT, Stakes, production verdict | [context/EVALS.md](context/EVALS.md) |
 | Delegation log | [docs/DDR-LOG.md](docs/DDR-LOG.md) |
 | Decision memo | [docs/DECISION-001.md](docs/DECISION-001.md) |

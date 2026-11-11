@@ -17,12 +17,38 @@ export const guideCatalog = Object.freeze({
   },
 });
 
+const DIRECTORY_DATA_URL = "./data/directory.json";
+const DIRECTORY_REQUEST_FILE = "directory-opt-in-request.json";
+
 export function getGuideCatalog() {
   return Object.fromEntries(Object.entries(guideCatalog));
 }
 
 export function getGuideArea(name) {
   return guideCatalog[name] ?? Object.values(guideCatalog)[0];
+}
+
+export function filterDirectoryEntries(entries, query = "") {
+  const searchTerm = query.trim().toLowerCase();
+  if (!searchTerm) {
+    return entries;
+  }
+
+  return entries.filter((entry) =>
+    [entry.name, entry.team, entry.topics].some((field) =>
+      field.toLowerCase().includes(searchTerm),
+    ),
+  );
+}
+
+export function buildOptInRequest({ name, team, contact, topics }) {
+  return {
+    name: String(name || "").trim(),
+    team: String(team || "").trim(),
+    contact: String(contact || "").trim(),
+    topics: String(topics || "").trim(),
+    consentToPublish: true,
+  };
 }
 
 export function renderGuideSelection(selectedName = "Business Credit") {
@@ -67,45 +93,12 @@ export function renderGuideSelection(selectedName = "Business Credit") {
   return selectedGuide;
 }
 
-const DIRECTORY_STORAGE_KEY = "team-directory-entries";
-const DIRECTORY_ENDPOINT =
-  (typeof window !== "undefined" && window.API_URL) || "/entries";
-
-function readFallbackNotes() {
-  if (typeof window === "undefined" || !window.localStorage) {
-    return [];
-  }
-
-  try {
-    const raw = window.localStorage.getItem(DIRECTORY_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
-function writeFallbackNotes(nextNotes) {
-  if (typeof window === "undefined" || !window.localStorage) {
-    return;
-  }
-
-  window.localStorage.setItem(DIRECTORY_STORAGE_KEY, JSON.stringify(nextNotes));
-}
-
-export function getDirectoryEndpoint() {
-  return DIRECTORY_ENDPOINT;
-}
-
-export function parseEntryCandidate(rawValue) {
-  return typeof rawValue === "string" ? rawValue.trim() : "";
-}
-
-function showStatus(message, type = "info") {
+function showStatus(targetSelector, message, type = "info") {
   if (typeof document === "undefined") {
     return;
   }
 
-  const target = document.querySelector("#form-message");
+  const target = document.querySelector(targetSelector);
   if (!target) {
     return;
   }
@@ -114,113 +107,30 @@ function showStatus(message, type = "info") {
   target.className = `status status-${type}`;
 }
 
-async function loadNotes() {
-  if (typeof document === "undefined") {
-    return [];
-  }
-
-  try {
-    const response = await fetch(DIRECTORY_ENDPOINT, { method: "GET" });
-    if (!response.ok) {
-      throw new Error("Directory request failed");
-    }
-
-    const entries = await response.json();
-    notes = Array.isArray(entries) ? entries : [];
-    renderNotes();
-    return notes;
-  } catch {
-    notes = readFallbackNotes();
-    renderNotes();
-    return notes;
-  }
-}
-
-async function createEntry(rawCandidate) {
-  const candidate = parseEntryCandidate(rawCandidate);
-  if (!candidate) {
-    showStatus("Please add a short description before saving.", "error");
-    return;
-  }
-
-  const draft = {
-    id: `entry-${Date.now()}`,
-    text: candidate,
-    createdAt: new Date().toISOString(),
-  };
-
-  nextNotes = [...notes, draft];
-
-  try {
-    const response = await fetch(DIRECTORY_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: candidate }),
-    });
-
-    if (!response.ok) {
-      const errorBody = await response.json().catch(() => ({ error: "Request failed" }));
-      throw new Error(errorBody.error || "Request failed");
-    }
-
-    const savedEntry = await response.json();
-    notes = Array.isArray(savedEntry) ? savedEntry : [...notes, savedEntry];
-    writeFallbackNotes(notes);
-    renderNotes();
-    showStatus("Entry saved. A new conversation request is now visible.", "success");
-    return notes;
-  } catch (error) {
-    notes = nextNotes;
-    writeFallbackNotes(notes);
-    renderNotes();
-    showStatus(error instanceof Error ? error.message : "Unable to save the entry right now.", "error");
-    return notes;
-  }
-}
-
-async function deleteEntry(entryId) {
-  const targetId = String(entryId);
-  const selected = notes.find((entry) => String(entry.id) === targetId);
-  if (!selected) {
-    return notes;
-  }
-
-  nextNotes = notes.filter((entry) => String(entry.id) !== targetId);
-
-  try {
-    const response = await fetch(`${DIRECTORY_ENDPOINT}/${encodeURIComponent(targetId)}`, {
-      method: "DELETE",
-    });
-
-    if (!response.ok) {
-      throw new Error("Delete request failed");
-    }
-
-    notes = nextNotes;
-    writeFallbackNotes(notes);
-    renderNotes();
-    showStatus("Entry removed from the directory.", "success");
-    return notes;
-  } catch {
-    renderNotes();
-    showStatus("A save error prevented the opt-out update. The entry remains visible.", "error");
-    return notes;
-  }
-}
-
 function renderNotes() {
   if (typeof document === "undefined") {
     return;
   }
 
   const list = document.querySelector("#directory-list");
-  if (!list) {
+  const searchInput = document.querySelector("#directory-search");
+  if (!list || !searchInput) {
     return;
   }
 
   list.replaceChildren();
+  const visibleNotes = filterDirectoryEntries(notes, searchInput.value);
+  if (visibleNotes.length === 0) {
+    const emptyState = document.createElement("li");
+    emptyState.className = "empty-state";
+    emptyState.textContent = notes.length
+      ? "No profiles match that search."
+      : "There are no curated profiles yet.";
+    list.appendChild(emptyState);
+    return;
+  }
 
-  notes.forEach((entry) => {
+  visibleNotes.forEach((entry) => {
     const item = document.createElement("li");
     item.className = "directory-item";
 
@@ -228,48 +138,129 @@ function renderNotes() {
     details.className = "directory-summary";
 
     const title = document.createElement("strong");
-    title.textContent = entry.name || "Available employee";
+    title.textContent = entry.name;
 
-    const description = document.createElement("p");
-    description.textContent = entry.text || "Available for a short informal conversation.";
+    const team = document.createElement("p");
+    team.textContent = `Team: ${entry.team}`;
 
-    const removeButton = document.createElement("button");
-    removeButton.type = "button";
-    removeButton.className = "remove-button";
-    removeButton.textContent = "Remove";
-    removeButton.addEventListener("click", () => {
-      deleteEntry(entry.id);
-    });
+    const topics = document.createElement("p");
+    topics.textContent = entry.topics;
 
-    details.append(title, description);
-    item.append(details, removeButton);
+    const contact = document.createElement("p");
+    contact.textContent = `Contact: ${entry.contact}`;
+
+    details.append(title, team, topics, contact);
+    item.appendChild(details);
     list.appendChild(item);
   });
 }
 
+async function loadNotes() {
+  try {
+    const response = await fetch(DIRECTORY_DATA_URL);
+    if (!response.ok) {
+      showStatus("#directory-message", "The curated directory could not be loaded. Please try again later.", "error");
+      return;
+    }
+
+    const directoryEntries = await response.json();
+    const validEntries =
+      Array.isArray(directoryEntries) &&
+      directoryEntries.every(
+        (entry) =>
+          entry &&
+          ["id", "name", "team", "topics", "contact"].every(
+            (field) => typeof entry[field] === "string" && entry[field].trim(),
+          ),
+      );
+
+    if (!validEntries) {
+      showStatus("#directory-message", "The curated directory data is invalid. Please contact its maintainer.", "error");
+      return;
+    }
+
+    notes = directoryEntries;
+    renderNotes();
+  } catch {
+    showStatus("#directory-message", "The curated directory could not be loaded. Please try again later.", "error");
+  }
+}
+
+function downloadOptInRequest(request) {
+  const file = new Blob([`${JSON.stringify(request, null, 2)}\n`], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(file);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = DIRECTORY_REQUEST_FILE;
+  document.body.appendChild(link);
+  link.click();
+  setTimeout(() => {
+    link.remove();
+    URL.revokeObjectURL(url);
+  }, 1000);
+}
+
 let notes = [];
-let candidate = "";
-let nextNotes = [];
+let candidate = null;
 
 function initDirectory() {
   if (typeof document === "undefined") {
     return;
   }
 
-  const form = document.querySelector("#directory-form");
-  const input = document.querySelector("#directory-input");
+  const searchInput = document.querySelector("#directory-search");
+  if (searchInput) {
+    searchInput.addEventListener("input", renderNotes);
+  }
 
-  if (form && input) {
-    form.addEventListener("submit", async (event) => {
+  const optInForm = document.querySelector("#opt-in-form");
+  if (optInForm) {
+    optInForm.addEventListener("submit", (event) => {
       event.preventDefault();
-      candidate = input.value;
-      await createEntry(candidate);
-      input.value = "";
+      const formData = new FormData(optInForm);
+      candidate = {
+        name: String(formData.get("name") || ""),
+        team: String(formData.get("team") || ""),
+        contact: String(formData.get("contact") || ""),
+        topics: String(formData.get("topics") || ""),
+      };
+
+      if (!formData.get("consent") || Object.values(candidate).some((value) => !value.trim())) {
+        showStatus("#form-message", "Complete every field and confirm consent before preparing the request.", "error");
+        return;
+      }
+
+      const request = buildOptInRequest(candidate);
+      const requestOutput = document.querySelector("#request-output");
+      const requestOutputLabel = document.querySelector("#request-output-label");
+      if (requestOutput && requestOutputLabel) {
+        requestOutput.value = JSON.stringify(request, null, 2);
+        requestOutput.hidden = false;
+        requestOutputLabel.hidden = false;
+      }
+
+      try {
+        downloadOptInRequest(request);
+        showStatus(
+          "#form-message",
+          "Request prepared locally. It has not been sent or added to the directory; share the downloaded file or copied JSON with the maintainer through an approved private channel.",
+          "success",
+        );
+        optInForm.reset();
+        candidate = null;
+      } catch {
+        showStatus(
+          "#form-message",
+          "The request is shown below, but the file could not be created. Copy the JSON and share it with the maintainer through an approved private channel.",
+          "error",
+        );
+      }
     });
   }
 
-  const guideButtons = document.querySelectorAll(".guide-button");
-  guideButtons.forEach((button) => {
+  document.querySelectorAll(".guide-button").forEach((button) => {
     button.addEventListener("click", () => {
       renderGuideSelection(button.dataset.guide || "Business Credit");
     });

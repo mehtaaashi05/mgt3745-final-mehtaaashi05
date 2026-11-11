@@ -2,7 +2,7 @@
 
 Status: ACTIVE.
 
-An intern on one team becomes curious about another and wants firsthand information before deciding whether to pursue a move, without signaling dissatisfaction or requesting a transfer. The scope covers requesting and completing one short, informal, no-commitment conversation with someone from a different team, visible to the intern's current manager and framed as standard program participation with an explicit no-standing-impact guarantee. 
+An intern on one team becomes curious about another and wants firsthand information before deciding whether to pursue a move, without signaling dissatisfaction or requesting a transfer. The product goal is to help the intern find an opted-in employee for one short, informal, no-commitment conversation. This static prototype supports search and curated examples only; conversation requests, manager visibility, and a no-standing-impact guarantee remain outside its implementation.
 
 ## Problem statement
 
@@ -20,13 +20,18 @@ activity framed as ordinary development rather than a transfer signal.
 
 ## Scope
 
-In: adding and listing a short opt-in directory entry. Out: messaging,
-identity verification, transfer requests, and manager approvals. Deferred:
-per-user accounts, private entries, and removal workflows.
+In: searching a curated list of employees who opted in to a short conversation,
+and preparing a local opt-in request file for manual review. A maintainer
+reviews requests and republishes the static directory. Out: immediate
+submission, messaging, identity verification, transfer requests, and manager
+approvals. Deferred: accounts, private entries, self-service opt-out, and
+automated removal workflows.
 
 ## Constraints
 
-The project is a one-week static page plus a small Cloudflare Worker and D1
-database, with a zero budget. It stores only fictional, non-sensitive entry
-text and server timestamps. The browser-to-Cloudflare crossing is recorded in
-[TOOLS.md](TOOLS.md) and ADR-002.
+The project is a zero-budget static site with a checked-in JSON directory and
+no application server. The current directory contains fictional, non-sensitive
+examples. Any published directory data is publicly readable; real employee
+details must not be added without explicit approval and an appropriate
+publishing process. The opt-in form creates a local request file and sends
+nothing. See [ARCHITECTURE.md](ARCHITECTURE.md) and ADR-003.

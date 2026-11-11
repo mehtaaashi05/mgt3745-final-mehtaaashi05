@@ -1,7 +1,12 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-import { getGuideCatalog, getGuideArea, parseEntryCandidate, getDirectoryEndpoint } from "../app.js";
+import {
+  filterDirectoryEntries,
+  getGuideCatalog,
+  getGuideArea,
+  renderGuideSelection,
+} from "../app.js";
 
 describe("F-04 guide", () => {
   it("F-04-1: guide data lists Business Credit and Treasury Management", () => {
@@ -22,13 +27,30 @@ describe("F-04 guide", () => {
     assert.ok(treasuryManagement.conversationStarters.length >= 1);
   });
 
-  it("F-04-3: each selected guide is labeled illustrative", () => {
+  it("F-04-3: selecting a different area returns its content while both areas remain available", () => {
+    assert.equal(renderGuideSelection("Treasury Management"), getGuideArea("Treasury Management"));
+    assert.equal(renderGuideSelection("Business Credit"), getGuideArea("Business Credit"));
+    assert.deepEqual(Object.keys(getGuideCatalog()), ["Business Credit", "Treasury Management"]);
+  });
+
+  it("F-04-4: each selected guide is labeled illustrative", () => {
     const guide = getGuideArea("Business Credit");
     assert.match(JSON.stringify(guide), /illustrative|official role description|transfer recommendation/i);
   });
 
-  it("F-04-4: the directory endpoint matches the GET /entries contract", () => {
-    assert.equal(getDirectoryEndpoint(), "/entries");
-    assert.equal(parseEntryCandidate("  Need a quick intro  "), "Need a quick intro");
+  it("F-04-5: selecting guide content does not change curated directory results", () => {
+    const notes = [
+      {
+        id: "sample-001",
+        name: "Alex Chen",
+        team: "Business Credit",
+        topics: "Credit analysis",
+        contact: "alex.chen@example.invalid",
+      },
+    ];
+
+    getGuideArea("Treasury Management");
+
+    assert.deepEqual(filterDirectoryEntries(notes), notes);
   });
 });

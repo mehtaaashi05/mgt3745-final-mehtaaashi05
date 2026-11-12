@@ -4,12 +4,13 @@ Reusable patterns and delegation guidance, written so an agent (or a
 stranger) could apply them next time. Each entry under fifteen lines.
 Load-on-demand: an agent reads the heading first and the body only when relevant.
 
-## Pattern: fetch with the failure shown on the page
-**When:** any call from app.js to the Worker.
-**Do:** check `res.ok`; on failure, read `res.text()` and put it in the
-status element with `textContent`; wrap the call in try/catch for network
-errors; never throw to the console.
-**Because:** localStorage never failed; the network does (ADR-002).
+## Pattern: load curated JSON with the failure shown on the page
+**When:** app.js loads the static directory file.
+**Do:** check `res.ok`, validate the parsed fields, and show a useful status
+message for HTTP, malformed-data, and network failures; never throw to the
+console.
+**Because:** the directory is a public static file; there is no Worker API
+or browser-storage fallback (ADR-002).
 
 ## Delegation guidance: what to paste, what to check first
 **Paste, in order:** PROJECT, FEATURES (rows marked), STYLE, STANDARDS, TOOLS, then the current page files. One instruction line naming the files it may touch.
@@ -18,6 +19,6 @@ errors; never throw to the console.
 
 ## Delegation guidance: one-line prompt pattern
 **Paste:** PROJECT, FEATURES (rows marked), STYLE, STANDARDS, TOOLS, then the current page files. One instruction line naming the files it may touch.
-**Instruction line:** "Build F-04 in index.html, styles.css, and app.js only; keep the Worker/D1 data flow and the existing directory unchanged."
+**Instruction line:** "Build F-04 in index.html, styles.css, and app.js only; keep the curated JSON read-only and do not add an API or browser-storage fallback."
 **Check first:** file list, then `innerHTML` / concatenated SQL, then token use, then network calls and extra dependencies.
 **Why:** the most common failure mode is a broadened scope or a hidden dependency, not a syntax error. 

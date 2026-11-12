@@ -67,216 +67,186 @@ export function renderGuideSelection(selectedName = "Business Credit") {
   return selectedGuide;
 }
 
-const DIRECTORY_STORAGE_KEY = "team-directory-entries";
-const DIRECTORY_ENDPOINT =
-  (typeof window !== "undefined" && window.API_URL) || "/entries";
+const DIRECTORY_DATA_URL = "./data/directory.json";
 
-function readFallbackNotes() {
-  if (typeof window === "undefined" || !window.localStorage) {
-    return [];
+export function validateDirectoryEntries(entries) {
+  if (!Array.isArray(entries)) {
+    throw new TypeError("Directory data must be a list.");
   }
 
-  try {
-    const raw = window.localStorage.getItem(DIRECTORY_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
-function writeFallbackNotes(nextNotes) {
-  if (typeof window === "undefined" || !window.localStorage) {
-    return;
-  }
-
-  window.localStorage.setItem(DIRECTORY_STORAGE_KEY, JSON.stringify(nextNotes));
-}
-
-export function getDirectoryEndpoint() {
-  return DIRECTORY_ENDPOINT;
-}
-
-export function parseEntryCandidate(rawValue) {
-  return typeof rawValue === "string" ? rawValue.trim() : "";
-}
-
-function showStatus(message, type = "info") {
-  if (typeof document === "undefined") {
-    return;
-  }
-
-  const target = document.querySelector("#form-message");
-  if (!target) {
-    return;
-  }
-
-  target.textContent = message;
-  target.className = `status status-${type}`;
-}
-
-async function loadNotes() {
-  if (typeof document === "undefined") {
-    return [];
-  }
-
-  try {
-    const response = await fetch(DIRECTORY_ENDPOINT, { method: "GET" });
-    if (!response.ok) {
-      throw new Error("Directory request failed");
+  const ids = new Set();
+  for (const entry of entries) {
+    if (
+      !entry ||
+      typeof entry.id !== "string" ||
+      typeof entry.name !== "string" ||
+      typeof entry.team !== "string" ||
+      typeof entry.topics !== "string" ||
+      typeof entry.contact !== "string" ||
+      !entry.id.trim() ||
+      !entry.name.trim() ||
+      !entry.team.trim() ||
+      !entry.topics.trim() ||
+      !entry.contact.trim() ||
+      ids.has(entry.id)
+    ) {
+      throw new TypeError("Directory data contains an invalid profile.");
     }
-
-    const entries = await response.json();
-    notes = Array.isArray(entries) ? entries : [];
-    renderNotes();
-    return notes;
-  } catch {
-    notes = readFallbackNotes();
-    renderNotes();
-    return notes;
+    ids.add(entry.id);
   }
+  return entries;
 }
 
-async function createEntry(rawCandidate) {
-  const candidate = parseEntryCandidate(rawCandidate);
-  if (!candidate) {
-    showStatus("Please add a short description before saving.", "error");
-    return;
+export function filterDirectoryEntries(notes, query = "") {
+  const searchTerm = query.trim().toLowerCase();
+  if (!searchTerm) {
+    return notes;
   }
 
-  const draft = {
-    id: `entry-${Date.now()}`,
-    text: candidate,
-    createdAt: new Date().toISOString(),
+  return notes.filter((entry) =>
+    [entry.name, entry.team, entry.topics].some((field) =>
+      field.toLowerCase().includes(searchTerm),
+    ),
+  );
+}
+
+export function buildOptInRequest({ name, team, topics, contact }) {
+  const id = globalThis.crypto?.randomUUID?.();
+  if (!id) {
+    throw new Error("This browser cannot create a unique profile ID.");
+  }
+
+  const candidate = {
+    id: `profile-${id}`,
+    name: String(name || "").trim(),
+    team: String(team || "").trim(),
+    topics: String(topics || "").trim(),
+    contact: String(contact || "").trim(),
   };
+  if (Object.values(candidate).some((field) => !field)) {
+    throw new TypeError("Complete each field before preparing the request.");
+  }
+  return candidate;
+}
 
-  nextNotes = [...notes, draft];
-
-  try {
-    const response = await fetch(DIRECTORY_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: candidate }),
-    });
-
-    if (!response.ok) {
-      const errorBody = await response.json().catch(() => ({ error: "Request failed" }));
-      throw new Error(errorBody.error || "Request failed");
-    }
-
-    const savedEntry = await response.json();
-    notes = Array.isArray(savedEntry) ? savedEntry : [...notes, savedEntry];
-    writeFallbackNotes(notes);
-    renderNotes();
-    showStatus("Entry saved. A new conversation request is now visible.", "success");
-    return notes;
-  } catch (error) {
-    notes = nextNotes;
-    writeFallbackNotes(notes);
-    renderNotes();
-    showStatus(error instanceof Error ? error.message : "Unable to save the entry right now.", "error");
-    return notes;
+function showStatus(selector, message, type = "info") {
+  const target = document.querySelector(selector);
+  if (target) {
+    target.textContent = message;
+    target.className = `status status-${type}`;
   }
 }
 
-async function deleteEntry(entryId) {
-  const targetId = String(entryId);
-  const selected = notes.find((entry) => String(entry.id) === targetId);
-  if (!selected) {
-    return notes;
-  }
-
-  nextNotes = notes.filter((entry) => String(entry.id) !== targetId);
-
-  try {
-    const response = await fetch(`${DIRECTORY_ENDPOINT}/${encodeURIComponent(targetId)}`, {
-      method: "DELETE",
-    });
-
-    if (!response.ok) {
-      throw new Error("Delete request failed");
-    }
-
-    notes = nextNotes;
-    writeFallbackNotes(notes);
-    renderNotes();
-    showStatus("Entry removed from the directory.", "success");
-    return notes;
-  } catch {
-    renderNotes();
-    showStatus("A save error prevented the opt-out update. The entry remains visible.", "error");
-    return notes;
-  }
-}
-
-function renderNotes() {
-  if (typeof document === "undefined") {
-    return;
-  }
-
+function renderDirectory(notes, query = "") {
   const list = document.querySelector("#directory-list");
   if (!list) {
     return;
   }
 
   list.replaceChildren();
-
-  notes.forEach((entry) => {
+  const matches = filterDirectoryEntries(notes, query);
+  for (const entry of matches) {
     const item = document.createElement("li");
     item.className = "directory-item";
 
-    const details = document.createElement("div");
-    details.className = "directory-summary";
-
     const title = document.createElement("strong");
-    title.textContent = entry.name || "Available employee";
+    title.textContent = entry.name;
 
-    const description = document.createElement("p");
-    description.textContent = entry.text || "Available for a short informal conversation.";
+    const team = document.createElement("p");
+    team.textContent = `Team: ${entry.team}`;
 
-    const removeButton = document.createElement("button");
-    removeButton.type = "button";
-    removeButton.className = "remove-button";
-    removeButton.textContent = "Remove";
-    removeButton.addEventListener("click", () => {
-      deleteEntry(entry.id);
-    });
+    const topics = document.createElement("p");
+    topics.textContent = entry.topics;
 
-    details.append(title, description);
-    item.append(details, removeButton);
+    const contact = document.createElement("p");
+    contact.textContent = `Contact: ${entry.contact}`;
+
+    item.append(title, team, topics, contact);
     list.appendChild(item);
-  });
+  }
+
+  showStatus(
+    "#directory-message",
+    matches.length ? `${matches.length} example profile(s) shown.` : "No matching profiles.",
+  );
 }
 
-let notes = [];
-let candidate = "";
-let nextNotes = [];
+async function loadDirectory() {
+  const response = await fetch(DIRECTORY_DATA_URL);
+  if (!response.ok) {
+    throw new Error(`Directory data could not be loaded (HTTP ${response.status}).`);
+  }
+  return validateDirectoryEntries(await response.json());
+}
 
 function initDirectory() {
   if (typeof document === "undefined") {
     return;
   }
 
-  const form = document.querySelector("#directory-form");
-  const input = document.querySelector("#directory-input");
+  let notes = [];
+  const searchInput = document.querySelector("#directory-search");
+  const form = document.querySelector("#opt-in-form");
+  const output = document.querySelector("#request-output");
 
-  if (form && input) {
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      candidate = input.value;
-      await createEntry(candidate);
-      input.value = "";
-    });
-  }
+  searchInput?.addEventListener("input", () => {
+    renderDirectory(notes, searchInput.value);
+  });
 
-  const guideButtons = document.querySelectorAll(".guide-button");
-  guideButtons.forEach((button) => {
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const fields = new FormData(form);
+    try {
+      const candidate = buildOptInRequest({
+        name: fields.get("name"),
+        team: fields.get("team"),
+        topics: fields.get("topics"),
+        contact: fields.get("contact"),
+      });
+      output.value = JSON.stringify(candidate, null, 2);
+      output.hidden = false;
+      document.querySelector("#request-output-label").hidden = false;
+      document.querySelector("#copy-request").hidden = false;
+      showStatus(
+        "#form-message",
+        "Request prepared on this device only. It has not been submitted or added to the directory.",
+        "success",
+      );
+    } catch (error) {
+      showStatus("#form-message", error.message, "error");
+    }
+  });
+
+  document.querySelector("#copy-request")?.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(output.value);
+      showStatus("#form-message", "Request JSON copied. It has not been submitted.", "success");
+    } catch {
+      output.focus();
+      output.select();
+      showStatus(
+        "#form-message",
+        "Automatic copy is unavailable. Select and copy the JSON above; it has not been submitted.",
+        "error",
+      );
+    }
+  });
+
+  document.querySelectorAll(".guide-button").forEach((button) => {
     button.addEventListener("click", () => {
       renderGuideSelection(button.dataset.guide || "Business Credit");
     });
   });
 
   renderGuideSelection("Business Credit");
-  loadNotes();
+  loadDirectory()
+    .then((loadedNotes) => {
+      notes = loadedNotes;
+      renderDirectory(notes, searchInput?.value || "");
+    })
+    .catch((error) => {
+      showStatus("#directory-message", error.message, "error");
+    });
 }
 
 if (typeof document !== "undefined") {

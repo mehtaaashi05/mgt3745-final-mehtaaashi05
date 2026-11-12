@@ -5,5 +5,5 @@
     "vscode": { "extensions": ["ritwickdey.LiveServer", "GitHub.copilot"] }
   },
   "postCreateCommand": "sudo apt-get update && sudo apt-get install -y xdg-utils unzip",
-  "forwardPorts": [5500, 8787]
+  "forwardPorts": [5500]
 }

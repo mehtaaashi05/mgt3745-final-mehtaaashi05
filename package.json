@@ -3,7 +3,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test \"evals/**/*.test.js\"",
-    "test:proxy": "node --test \"worker/test/*.test.js\""
+    "test": "node --test \"evals/**/*.test.js\""
   }
 }

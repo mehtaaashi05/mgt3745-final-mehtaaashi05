@@ -12,25 +12,21 @@
         <h1>Team Explorer Directory</h1>
         <p>
           Interns can learn what a different team does without making a formal move request.
-          Employees can opt in to a short, informational conversation.
+          Search the fictional examples below. The opt-in form only prepares a local JSON snippet;
+          it does not submit or publish anything.
         </p>
       </header>
 
       <div class="layout">
         <section class="panel" aria-labelledby="directory-title">
           <h2 id="directory-title">Opt-in directory</h2>
-          <form id="directory-form">
-            <label for="directory-input">What can you talk about?</label>
-            <textarea
-              id="directory-input"
-              name="directory-input"
-              rows="4"
-              maxlength="200"
-              placeholder="Example: I can share what a day in Treasury Management looks like and answer questions about the team."
-            ></textarea>
-            <button type="submit">Save availability</button>
-          </form>
-          <p id="form-message" class="status" aria-live="polite"></p>
+          <p class="data-notice">
+            These example profiles are fictional. Published directory data is public to everyone
+            who can access the site.
+          </p>
+          <label for="directory-search">Search by name, team, or topic</label>
+          <input id="directory-search" type="search" autocomplete="off" />
+          <p id="directory-message" class="status" aria-live="polite"></p>
           <ul id="directory-list" class="directory-list" aria-live="polite"></ul>
         </section>
 
@@ -44,6 +40,40 @@
               Treasury Management
             </button>
           </div>
+
+          <section class="panel opt-in-panel" aria-labelledby="opt-in-title">
+            <h2 id="opt-in-title">Prepare an opt-in request</h2>
+            <p>
+              This form creates a copyable JSON snippet on your device only. It is not sent to anyone,
+              does not update the directory, and does not enroll you. No approved private intake
+              channel is configured, so do not enter real employee details.
+            </p>
+            <form id="opt-in-form">
+              <label for="employee-name">Name or alias</label>
+              <input id="employee-name" name="name" type="text" maxlength="100" required />
+
+              <label for="employee-team">Team</label>
+              <input id="employee-team" name="team" type="text" maxlength="100" required />
+
+              <label for="employee-contact">Contact (use a fictional address for this demo)</label>
+              <input id="employee-contact" name="contact" type="email" maxlength="200" required />
+
+              <label for="employee-topics">Topics</label>
+              <textarea id="employee-topics" name="topics" rows="3" maxlength="200" required></textarea>
+              <button type="submit">Prepare JSON snippet</button>
+            </form>
+            <p id="form-message" class="status" aria-live="polite"></p>
+            <label id="request-output-label" for="request-output" hidden>
+              Request JSON (local only; not submitted)
+            </label>
+            <textarea id="request-output" rows="8" readonly hidden></textarea>
+            <button id="copy-request" type="button" hidden>Copy JSON</button>
+            <p>
+              There is no real employee opt-in or opt-out process in this prototype. Before real
+              profiles are published, a private intake and removal process must be approved; removal
+              would require updating and republishing the JSON file.
+            </p>
+          </section>
           <article id="guide-content" aria-live="polite"></article>
         </section>
       </div>
@@ -52,4 +82,3 @@
     <script type="module" src="./app.js"></script>
   </body>
 </html>
-

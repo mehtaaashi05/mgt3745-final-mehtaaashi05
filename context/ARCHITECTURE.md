@@ -1,12 +1,45 @@
 # ARCHITECTURE.md
 
-Decisionns, in order. An ADR is never edited after it is accepted; it is superseded.
+Decisions, in order. An ADR is never edited after it is accepted; it is superseded.
 
-## Current implementation status (2026-11-09)
+## Current implementation status (2026-11-11)
 
-ADR-002 records the intended durable architecture: the static frontend sends directory requests to a Cloudflare Worker, and the Worker validates requests and reads/writes entries in a bound Cloudflare D1 database using parameterized SQL. The current checked-in Worker is not that implementation: `worker/src/index.js` stores entries in an in-memory `Map`, and `worker/wrangler.toml` has no D1 database binding. There is no configured D1 database or deployed Worker, so data is not durable or shared through Cloudflare in the current repository. Treat ADR-002 as the architectural decision, not evidence that it has been implemented or deployed.
+The current application is a static site. It fetches read-only profiles from
+`data/directory.json` and filters them in the browser by name, team, and topic.
+The checked-in profiles are fictional. The opt-in form creates a copyable JSON
+snippet in the browser; it does not submit, store, or publish the request.
+There is no Worker, D1 database, or browser `localStorage` data flow.
 
-Before deploying the D1 architecture, add and verify the D1 schema and Wrangler binding, implement the Worker queries with prepared statements and bound user values, test the API against that database, configure the frontend API endpoint, and document the deployed URL. Until those steps are complete, the supported local prototype uses the browser `localStorage` fallback. See the [Sourcing Audit](../docs/SOURCING-AUDIT.md) and [Deployment Notes](../docs/DEPLOY.md) for the current inventory and deployment status.
+The GitHub Pages workflow runs the tests and publishes the static files when
+changes reach `main` if the tests pass. Deployment is not verified until the
+workflow succeeds and its public URL is checked. See the [Sourcing
+Audit](../docs/SOURCING-AUDIT.md) and [Deployment
+Notes](../docs/DEPLOY.md) for the current inventory and deployment status.
+The current decision is [ADR-002](../docs/ADR-002.md); it supersedes the
+historical Worker/D1 decision recorded below.
+
+## Current trust boundary and data handling
+
+- **Directory data:** each profile contains a name or alias, team, topics, and
+  contact value. The checked-in profiles use fictional names and the reserved
+  `.invalid` domain. The JSON file is visible in the repository and readable by
+  every site visitor; there is no authentication.
+- **Opt-in request:** the form displays a JSON snippet locally. It makes no
+  request to a server and does not persist the values in browser storage. No
+  approved private intake channel exists, so do not enter real employee
+  details or treat the form as a real enrollment.
+- **Editing and publication:** repository collaborators with write access can
+  change `data/directory.json`; GitHub Pages serves the published file publicly
+  after a successful deployment. Before any real profile is added, obtain
+  explicit consent and organizational approval, and arrange a private intake
+  and removal process.
+- **Opt-out:** the prototype has no live opt-out route because it contains no
+  real employee profiles. An approved private request route must be arranged
+  before adding real profiles; removal would require updating the JSON and
+  redeploying the static site.
+- **Hosting metadata:** GitHub handles ordinary hosting request metadata under
+  its service terms. The app does not intentionally collect analytics or send
+  form data to the host.
 
 ## The Gate: HW4 rerun
 
@@ -24,11 +57,11 @@ Where should entries live now that they must survive a cleared cache?
 
 The HW3 weights are unchanged. Inspectability and time-to-working remain the highest priorities because the assignment requires me to understand and verify the Worker, while the zero-budget constraint still makes cost important. For switching cost, I scored Build 4 because Session B required learning deployment and wiring the API, but the data remains portable SQL and the frontend has a small fetch boundary. I scored Buy and Delegate 2 because leaving would require replacing vendor-specific storage/authuration and API behavior.
 
-Build wins because it keeps the Worker, SQL schema, validation, and data flow inspectable while meeting the cleared-cache requirement without changing the application's core feature. The totals are a decision aid, not a claim that the other options are impossible.
+The historical comparison selected Build because it kept the Worker, SQL schema, validation, and data flow inspectable while meeting the cleared-cache requirement. This was an architectural decision, not a description of a deployed service. The static curated-data decision in [ADR-002](../docs/ADR-002.md) supersedes it.
 
 ## ADR-002: Entries move from localStorage to Cloudflare D1
 
-**Status:** Accepted  
+**Status:** Accepted
 **Supersedes:** ADR-001
 
 ### Context
@@ -59,12 +92,12 @@ Revisit this decision if the project needs separate entries or permissions for m
 
 **Status:** Superseded by ADR-002
 
-Title and date: ADR-001: Build the opt-in directory (F-01) by hand - September 12, 2026 
+Title and date: ADR-001: Build the opt-in directory (F-01) by hand - September 12, 2026
 
-Status: Accepted Door / concrete acquisition and execution choice: Build. HW3 supplies a working template app. I adapted its existing behavior by rebranding it as the opt-in directory and adding a matching error message, instead of replacing it with a build from scratch or paying for/delegating an entriely new implementation. 
+Status: Accepted Door / concrete acquisition and execution choice: Build. HW3 supplies a working template app. I adapted its existing behavior by rebranding it as the opt-in directory and adding a matching error message, instead of replacing it with a build from scratch or paying for/delegating an entriely new implementation.
 
 Context: F-01 specifies an opt-in directory: employees list themselves as available for a short informal conversation, and interns browse the list. The supplied template already implements the exact load/save/render/opt-out shape F-01 needs. It provides a form that saves an entry and a list that renders it, with delete already behaving like an immediate opt-out. The budget is zero, the deadline is about a week, and the course requires I be able to inspect and explain every line, including the parts I did not originally write. Paying for an existing directory service would cost moeny I do not have and would not natively enforce my specific removal time rule. Fully delegating a rebuild would be faster than adapting the template myself, but my own instectability score for a wholesale agent rewrite is low. I can read and modify the supplied plain JavaScript, but I am not yet confident auditing an entirely new implementation for subtle bugs on my own.
 
-Decision: Adapt the supplied template in place. Rebrand its text to describe an opt-in directory and add an error message, keeping its existing load/save/render patter, accessibility attributes, and the simulateFailedSave test harness untouched. 
+Decision: Adapt the supplied template in place. Rebrand its text to describe an opt-in directory and add an error message, keeping its existing load/save/render patter, accessibility attributes, and the simulateFailedSave test harness untouched.
 
 Consequences and revisit trigger: This makes the feature fully inspectable by me and lets me match F-01's acceptance criteria directly, at the cost of taking longer to build than an existing tool would and producing a visible simpler interface. The interaction is one-directional by design. However, this prototype does not provide production authentication, multi-user synchronization, manager notifications, scheduling automation, or internship-end enforcement. There is no login yet, anyone using the page can currently do both the "opt in" and "browse" actions, with nothing enforcing that separation. Additionally, there is no system in place to remove intern access once their internship ends. I will need to revisit these to make sure that real accounts enforce who can opt in versus who can only browse and when intern access needs to be revoked. At that point, I will write ADR-002 and mark this ADR as Superseded, not deleted.

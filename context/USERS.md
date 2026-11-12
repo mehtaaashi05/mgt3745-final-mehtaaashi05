@@ -47,9 +47,10 @@ direct request will be misread.
 
 ## Secondary user
 
-The secondary user is the Proactive Outreacher: an employee who has opted in
-and adds a short fictional description of what they can discuss. They want
-interested interns to find them without managing individual introductions.
+The intended secondary user is the Proactive Outreacher: an employee who may
+choose to be listed and describe what they can discuss. The current prototype
+has no approved private intake process and publishes fictional examples only;
+it does not yet enroll real employees.
 
 ## Journey
 
@@ -59,7 +60,7 @@ journey
   section Arrive
     Opens the page: 4: Intern
   section Act
-    Adds an entry: 5: Employee
+    Prepares a local request: 3: Employee
   section Return
     Comes back on another device: 3: Intern
 ```

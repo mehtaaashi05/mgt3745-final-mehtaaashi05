@@ -12,13 +12,13 @@ Profiles and evidence are documented in [USERS.md](USERS.md): PROFILE-01 (The He
 
 The product goal is to help an intern find an employee from another team for one short, informal, no-commitment conversation. This static prototype supports searching a curated directory; it does not implement conversation requests, manager visibility, or a no-standing-impact guarantee.
 
-It does not cover formal transfer or rotation applications, scheduling automation, performance or return-offer decisions, or full-time employees. F-01 is a static curated directory with a demo-only local request-file form; it has no shared backend, approved intake channel, or immediate publishing.
+It does not cover formal transfer or rotation applications, scheduling automation, performance or return-offer decisions, or full-time employees. F-01 is a static curated directory with a local opt-in request-file handoff; it has no shared backend or immediate publishing.
 
 ## Features
 
 | Feature ID | Feature | Kano hypothesis | Segment / date | Evidence and reasoning | Status |
 |---|---|---|---|---|---|
-| F-01 | Opt-in directory of employees willing to have a 15-20 minute informal conversation with an intern from another team | Must-be | Both segments - Sept 08 | INT-02 succeeded via self-arranged cold outreach; INT-01 confirmed no formal way exists to find who is approachable. | Built as static curated data; example profiles only |
+| F-01 | Curated directory of employees willing to have a 15-20 minute informal conversation with an intern from another team | Must-be | Both segments - Sept 08 | INT-02 succeeded via self-arranged cold outreach; INT-01 confirmed no formal way exists to find who is approachable. | Built as static curated data; example profiles only |
 | F-02 | Explicit information-only and no-commitment framing on every conversation request | Performance | Hesitant Explorer - Sept 08 | INT-01 said “tell me about your team” felt less risky than “I want to move.” | Deferred beyond the directory boundary |
 | F-03 | Current manager notification framed as standard program participation with no-standing-impact guarantee | Performance | Hesitant Explorer - Sept 08 | INT-02's manager reacted positively, challenging the assumption that visibility itself is the risk. | Deferred; requires organizational workflow and authentication |
 | F-04 | Static content pages of typical work per line of business | Indifferent | Both segments - Sept 08 | INT-02 said shadowing, not reading, confirmed interest. | Selected for HW5 delegation; usefulness remains uncertain |
@@ -27,9 +27,9 @@ It does not cover formal transfer or rotation applications, scheduling automatio
 
 ## Previously built feature: F-01 opt-in directory
 
-F-01 is implemented as a static directory loaded from `data/directory.json`. Interns can search curated entries by name, team, or topic. The opt-in form creates a demo JSON request file in the visitor's browser; it does not upload data or update the directory. No approved private intake or opt-out channel exists, so real employee opt-ins are not active and real details must not be entered. The checked-in profiles are fictional, and this prototype does not yet provide real employee matching.
+F-01 is implemented as a static directory loaded from `data/directory.json`. Interns can search curated entries by name, team, or topic. The opt-in form creates a JSON request file in the employee's browser; it does not upload data or update the directory. A maintainer must review a request, edit the JSON file, and redeploy. An employee must contact the maintainer privately to opt out; removal is not immediate or self-service. The checked-in profiles are fictional, and this prototype does not yet provide real employee matching.
 
-The discovery insight guiding this feature is that reputational risk is perceived as significantly greater than the cost actually enforced. The static prototype does not implement a private request handoff or a real opt-in workflow. The implementation boundary is documented in [ARCHITECTURE.md](ARCHITECTURE.md).
+The discovery insight guiding this feature is that reputational risk is perceived as significantly greater than the cost actually enforced. The prototype emphasizes voluntary participation, a private request handoff, and clear information-only framing. The implementation boundary is documented in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Selected HW5 feature: F-04 line-of-business guide
 
@@ -48,16 +48,16 @@ F-04 adds a small, static guide to typical work by line of business, alongside t
 - WHEN an intern opens the directory, THE SYSTEM SHALL load curated entries from the checked-in JSON file and identify the examples as fictional.
 - WHEN an intern searches, THE SYSTEM SHALL match names, teams, and topics without regard to letter case.
 - WHEN an employee completes the opt-in form, THE SYSTEM SHALL download a request file locally and SHALL NOT send or publish the submitted details.
-- BEFORE any real profile is published, THE SYSTEM SHALL require an approved private intake and removal process, explicit permission, and a maintainer review and redeployment.
-- BEFORE any real profile is published, THE SYSTEM SHALL provide employees a private opt-out route and explain that removal takes effect after the directory is republished.
+- WHEN a maintainer reviews an opt-in request, THE SYSTEM SHALL require the maintainer to update the JSON file and redeploy before the entry appears.
+- WHEN an employee wants to opt out, THE SYSTEM SHALL direct them to contact the maintainer privately and explain that removal requires a republish.
 - THE SYSTEM SHALL show an on-page error if the curated directory cannot be loaded or is malformed.
 
 ## Constraints
 
 - This public static prototype has no authentication; anyone who can access the page can read its published data.
 - The examples are fictional. Real employee details may be published only after explicit approval and an appropriate privacy review.
-- Opt-in requests are not sent from the page. No approved private handoff exists, so real opt-ins are not active.
-- No real employee profiles are published; a private opt-out route must be approved before real profiles are added.
+- Opt-in requests are not sent from the page. A private, approved handoff to a maintainer is required.
+- An employee can request removal from the maintainer, but this prototype does not provide immediate self-service removal.
 - The organization must make clear that a conversation is not a formal transfer request and carries no negative standing impact.
 - The system must retain no conversation content, only the fact that a request was made and its status.
 
@@ -75,8 +75,8 @@ The F-01 code checks are in `evals/f01.test.js`. They verify the curated
 fictional records, name/team/topic search, request-file payload, and that
 preparing a request does not alter the published directory. These tests do not
 verify that any real employee opted in, that an intern can contact a real
-employee, or that a private handoff and redeployment occurred. No real-user
-search test has been completed. F-04 checks are in `evals/f04-guide.test.js`.
+employee, or that a private handoff and redeployment occurred. F-04 checks are
+in `evals/f04-guide.test.js`.
 
 ## AI assistance
 

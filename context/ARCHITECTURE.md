@@ -4,9 +4,9 @@ Decisions, in order. An ADR is never edited after it is accepted; it is supersed
 
 ## Current implementation status (2026-11-11)
 
-ADR-003 supersedes the earlier Worker/D1 decision. The app is a static site: it loads read-only profiles from `data/directory.json`, supports browser-side search, and can prepare a local demo request file. The request is not transmitted. The checked-in profiles are fictional examples only. No approved private intake or opt-out channel is configured, so real employee opt-ins are not active. No Cloudflare Worker, D1 database, or API is used by the app. A Pages workflow exists, but its first deployment failed before Pages was enabled; no public site URL has been verified.
+ADR-003 supersedes the earlier Worker/D1 decision. The shipped app is a static site: it loads read-only profiles from `data/directory.json`, supports browser-side search, and creates a local opt-in request file. The request is not transmitted; a maintainer must review it, update the JSON file, and redeploy. The checked-in profiles are fictional examples only. No Cloudflare Worker, D1 database, or API is used by the app.
 
-The directory JSON is downloaded by every visitor to the static site and is publicly readable in the repository. Do not commit real names, work contacts, or other identifying details without explicit opt-in, organizational approval, and a privacy review. The demo request file exists only on the visitor's device and is not submitted. No request or opt-out process is currently available. See [ADR-003](../docs/ADR-003.md) and the [Deployment Notes](../docs/DEPLOY.md).
+The directory JSON is downloaded by every visitor to the static site and is publicly readable in the repository. Do not commit real names, work contacts, or other identifying details without explicit opt-in, organizational approval, and a privacy review. The opt-in request file exists only on the employee's device until they choose to share it through an approved private channel. No request or opt-out is submitted automatically. See [ADR-003](../docs/ADR-003.md) and the [Deployment Notes](../docs/DEPLOY.md).
 
 ## The Gate: HW4 historical decision
 
@@ -74,7 +74,7 @@ Use a static site that loads a curated, checked-in JSON file for directory searc
 - **Published directory:** `data/directory.json` contains a name, team, conversation topics, and contact value for each profile. The file is served to every visitor and is also visible in the repository. The current values are fictional and use the reserved `.invalid` domain.
 - **Opt-in request:** the browser collects a name, team, work contact, topics, and publication consent, then downloads those values to the employee's device. The page makes no network request with this form data and does not save it in browser storage. The employee must share the downloaded file with the maintainer through an approved private channel.
 - **Access and review:** anyone who can access the static site can read published entries; the prototype has no authentication or access control. The maintainer is responsible for review, consent, removal, and publishing. Real employee details must not be added to a public repository or site without organizational approval and an explicit privacy review.
-- **Opt-out:** no approved private removal channel exists and no real employee entries are active. Approve a private request route before publishing real profiles; removal would take effect after the curated JSON is changed and the site is redeployed.
+- **Opt-out:** the page explains that an employee must contact the maintainer privately. Removal takes effect only after the curated JSON is changed and the site is redeployed; there is no immediate self-service removal.
 - **Hosting:** static hosting receives ordinary web request metadata under its provider's terms. The app does not intentionally collect analytics or send directory-form data to the host.
 
 ### Alternatives considered

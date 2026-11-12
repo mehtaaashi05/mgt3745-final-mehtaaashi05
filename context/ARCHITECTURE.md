@@ -1,16 +1,16 @@
 # ARCHITECTURE.md
 
-Decisions, in order. An ADR is never edited after it is accepted; it is superseded.
+Decisionns, in order. An ADR is never edited after it is accepted; it is superseded.
 
-## Current implementation status (2026-11-11)
+## Current implementation status (2026-11-09)
 
-ADR-003 supersedes the earlier Worker/D1 decision. The shipped app is a static site: it loads read-only profiles from `data/directory.json`, supports browser-side search, and creates a local opt-in request file. The request is not transmitted; a maintainer must review it, update the JSON file, and redeploy. The checked-in profiles are fictional examples only. No Cloudflare Worker, D1 database, or API is used by the app.
+ADR-002 records the intended durable architecture: the static frontend sends directory requests to a Cloudflare Worker, and the Worker validates requests and reads/writes entries in a bound Cloudflare D1 database using parameterized SQL. The current checked-in Worker is not that implementation: `worker/src/index.js` stores entries in an in-memory `Map`, and `worker/wrangler.toml` has no D1 database binding. There is no configured D1 database or deployed Worker, so data is not durable or shared through Cloudflare in the current repository. Treat ADR-002 as the architectural decision, not evidence that it has been implemented or deployed.
 
-The directory JSON is downloaded by every visitor to the static site and is publicly readable in the repository. Do not commit real names, work contacts, or other identifying details without explicit opt-in, organizational approval, and a privacy review. The opt-in request file exists only on the employee's device until they choose to share it through an approved private channel. No request or opt-out is submitted automatically. See [ADR-003](../docs/ADR-003.md) and the [Deployment Notes](../docs/DEPLOY.md).
+Before deploying the D1 architecture, add and verify the D1 schema and Wrangler binding, implement the Worker queries with prepared statements and bound user values, test the API against that database, configure the frontend API endpoint, and document the deployed URL. Until those steps are complete, the supported local prototype uses the browser `localStorage` fallback. See the [Sourcing Audit](../docs/SOURCING-AUDIT.md) and [Deployment Notes](../docs/DEPLOY.md) for the current inventory and deployment status.
 
-## The Gate: HW4 historical decision
+## The Gate: HW4 rerun
 
-The following Worker/D1 comparison is retained as historical decision evidence. ADR-003 supersedes its selected architecture because the Worker scaffold had no D1 binding or deployment, and the assignment permits a static site with curated data.
+Where should entries live now that they must survive a cleared cache?
 
 | Criterion | Weight | Build (Worker + D1) | Buy (hosted BaaS) | Delegate (AI builder hosts it) |
 |---|---:|---:|---:|---:|
@@ -28,7 +28,7 @@ Build wins because it keeps the Worker, SQL schema, validation, and data flow in
 
 ## ADR-002: Entries move from localStorage to Cloudflare D1
 
-**Status:** Superseded by ADR-003
+**Status:** Accepted  
 **Supersedes:** ADR-001
 
 ### Context
@@ -52,44 +52,6 @@ Entries now survive a cleared browser cache and can be read by another browser t
 ### Revisit trigger
 
 Revisit this decision if the project needs separate entries or permissions for multiple users, private or sensitive data, offline-first behavior, a different data region or retention policy, or costs and Cloudflare terms no longer fit the project. A second user needing their own entries is ADR-003 territory.
-
----
-
-## ADR-003: Serve a curated directory from a static site
-
-**Status:** Accepted
-**Date:** 2026-11-11
-**Supersedes:** ADR-002
-
-### Context
-
-The professor clarified that a server-backed application is not required for deployment, but the architecture must support the product's core job and the documentation must describe what is actually shipped. The repository's Worker stores entries only in an in-memory `Map`; it has no D1 binding, configured database, or deployment. The browser's previous localStorage fallback was private to one browser and could not connect an employee opt-in to an intern search. A zero-budget static site is deployable, but it cannot accept and publish shared updates by itself.
-
-### Decision
-
-Use a static site that loads a curated, checked-in JSON file for directory searches. The opt-in form creates a JSON request file locally; it does not transmit or publish employee data. A maintainer reviews requests, gets explicit permission for any details to be published, updates the JSON file, and redeploys the site. Employees request opt-out through an approved private channel; the maintainer removes their entry and republishes. The example data remains fictional until an approved organization-controlled publishing process exists.
-
-### Trust boundary and data handling
-
-- **Published directory:** `data/directory.json` contains a name, team, conversation topics, and contact value for each profile. The file is served to every visitor and is also visible in the repository. The current values are fictional and use the reserved `.invalid` domain.
-- **Opt-in request:** the browser collects a name, team, work contact, topics, and publication consent, then downloads those values to the employee's device. The page makes no network request with this form data and does not save it in browser storage. The employee must share the downloaded file with the maintainer through an approved private channel.
-- **Access and review:** anyone who can access the static site can read published entries; the prototype has no authentication or access control. The maintainer is responsible for review, consent, removal, and publishing. Real employee details must not be added to a public repository or site without organizational approval and an explicit privacy review.
-- **Opt-out:** the page explains that an employee must contact the maintainer privately. Removal takes effect only after the curated JSON is changed and the site is redeployed; there is no immediate self-service removal.
-- **Hosting:** static hosting receives ordinary web request metadata under its provider's terms. The app does not intentionally collect analytics or send directory-form data to the host.
-
-### Alternatives considered
-
-- **Worker + D1:** would support shared, immediate opt-in and opt-out, but requires implementing and deploying persistence and documenting access controls. The current scaffold does not provide that capability, and the project has no configured D1 service.
-- **Browser localStorage:** rejected because entries exist only in one browser and cannot support cross-device intern search.
-- **Curated static JSON:** selected because it can be deployed as a static site at zero application-server cost and supports a real search flow. It deliberately does not support immediate employee updates or real matching until a safe curation and publishing process is approved.
-
-### Consequences
-
-The static site has no backend deployment or runtime service dependency, and the intern search flow can be tested independently. Opt-ins and opt-outs require manual private handoff, review, JSON maintenance, and redeployment. The public demo contains fictional profiles, so user testing evaluates findability and search usability, not actual employee matching. Do not present this prototype as a live employee directory.
-
-### Revisit trigger
-
-Revisit this decision when an organization-approved private publishing destination and opt-out process exist, or when live shared updates and access control are required. If real employee data needs server storage, add and test a durable backend and document its data access, retention, and opt-out controls before using it.
 
 ---
 

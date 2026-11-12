@@ -12,20 +12,25 @@
         <h1>Team Explorer Directory</h1>
         <p>
           Interns can learn what a different team does without making a formal move request.
-          Employees can request to be listed for a short, informational conversation.
+          Employees can opt in to a short, informational conversation.
         </p>
       </header>
 
       <div class="layout">
         <section class="panel" aria-labelledby="directory-title">
           <h2 id="directory-title">Opt-in directory</h2>
-          <p class="data-notice">
-            These example profiles are fictional. The directory is a public static file; do not
-            publish real employee contact details here without approval.
-          </p>
-          <label for="directory-search">Search by name, team, or topic</label>
-          <input id="directory-search" type="search" autocomplete="off" />
-          <p id="directory-message" class="status" aria-live="polite"></p>
+          <form id="directory-form">
+            <label for="directory-input">What can you talk about?</label>
+            <textarea
+              id="directory-input"
+              name="directory-input"
+              rows="4"
+              maxlength="200"
+              placeholder="Example: I can share what a day in Treasury Management looks like and answer questions about the team."
+            ></textarea>
+            <button type="submit">Save availability</button>
+          </form>
+          <p id="form-message" class="status" aria-live="polite"></p>
           <ul id="directory-list" class="directory-list" aria-live="polite"></ul>
         </section>
 
@@ -42,50 +47,9 @@
           <article id="guide-content" aria-live="polite"></article>
         </section>
       </div>
-
-      <section class="panel opt-in-panel" aria-labelledby="opt-in-title">
-        <h2 id="opt-in-title">Request to opt in</h2>
-        <p>
-          This form creates a request file on your device only. It does not send data to a server
-          or add you to the directory. Share the downloaded file with the directory maintainer
-          through an approved private channel; the maintainer reviews requests and updates the
-          curated file.
-        </p>
-        <p class="data-notice">
-          This public demo uses fictional profiles. Do not enter real personal or contact
-          information unless you have an approved private submission process.
-        </p>
-        <form id="opt-in-form">
-          <label for="employee-name">Name</label>
-          <input id="employee-name" name="name" type="text" maxlength="100" required />
-
-          <label for="employee-team">Team</label>
-          <input id="employee-team" name="team" type="text" maxlength="100" required />
-
-          <label for="employee-contact">Work contact</label>
-          <input id="employee-contact" name="contact" type="email" maxlength="200" required />
-
-          <label for="employee-topics">What can you talk about?</label>
-          <textarea id="employee-topics" name="topics" rows="3" maxlength="200" required></textarea>
-
-          <label class="consent-label">
-            <input name="consent" type="checkbox" required />
-            I agree that the listed details may be published if the maintainer approves my request.
-          </label>
-          <button type="submit">Download opt-in request</button>
-        </form>
-        <p id="form-message" class="status" aria-live="polite"></p>
-        <label id="request-output-label" for="request-output" hidden>
-          Request JSON for private handoff (copy if the download does not start)
-        </label>
-        <textarea id="request-output" rows="8" readonly hidden></textarea>
-        <p>
-          To opt out, ask the directory maintainer to remove your entry through an approved
-          private channel. Removal requires updating and republishing the curated file.
-        </p>
-      </section>
     </main>
 
     <script type="module" src="./app.js"></script>
   </body>
 </html>
+

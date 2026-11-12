@@ -2,7 +2,7 @@
 
 Status: ACTIVE.
 
-An intern on one team becomes curious about another and wants firsthand information before deciding whether to pursue a move, without signaling dissatisfaction or requesting a transfer. The scope covers requesting and completing one short, informal, no-commitment conversation with someone from a different team, visible to the intern's current manager and framed as standard program participation with an explicit no-standing-impact guarantee. 
+An intern on one team becomes curious about another and wants firsthand information before deciding whether to pursue a move, without signaling dissatisfaction or requesting a transfer. This prototype supports searching a curated static directory and preparing a local opt-in request snippet. It does not submit requests, arrange conversations, notify managers, or provide a no-standing-impact guarantee.
 
 ## Problem statement
 
@@ -20,13 +20,16 @@ activity framed as ordinary development rather than a transfer signal.
 
 ## Scope
 
-In: adding and listing a short opt-in directory entry. Out: messaging,
-identity verification, transfer requests, and manager approvals. Deferred:
-per-user accounts, private entries, and removal workflows.
+In: searching fictional curated profiles by name, team, or topic, and preparing
+a request snippet for manual curation. Out: messaging, identity verification,
+transfer requests, and manager approvals. Deferred: a real private intake and
+removal process, real employee profiles, and automated publishing.
 
 ## Constraints
 
-The project is a one-week static page plus a small Cloudflare Worker and D1
-database, with a zero budget. It stores only fictional, non-sensitive entry
-text and server timestamps. The browser-to-Cloudflare crossing is recorded in
-[TOOLS.md](TOOLS.md) and ADR-002.
+The project is a zero-budget static site using a checked-in JSON file and no
+application server. The published file is public. Current profiles and contact
+addresses are fictional; real employee details must not be added until an
+approved private intake, consent, and removal process exists. The opt-in form
+only prepares a local JSON snippet. See [ARCHITECTURE.md](ARCHITECTURE.md) and
+[ADR-002](../docs/ADR-002.md).

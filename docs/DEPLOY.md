@@ -1,14 +1,22 @@
 # Deployment Notes
 
-## Front end
+## Static site
 
-Not deployed. The [README](../README.md) is the source of truth for the public URL; it currently says none.
+The site has no application server. When changes reach `main`, the GitHub
+Actions workflow runs `npm test` and, if the tests pass, publishes `index.html`,
+`app.js`, `styles.css`, and `data/directory.json` to GitHub Pages. The
+deployment workflow must complete successfully before the public URL is added
+to the [README](../README.md). If deployment fails, check that GitHub Pages is
+enabled with **GitHub Actions** as the build and deployment source.
 
-## Worker
+The JSON file is public to everyone who can access the site and repository.
+Only fictional sample records are included. Do not publish real employee
+details without explicit consent, organizational approval, and an approved
+private intake and opt-out process.
 
-Not deployed and not ready to serve persistent data. [worker/src/index.js](../worker/src/index.js) stores entries in an in-memory `Map`; [worker/wrangler.toml](../worker/wrangler.toml) has no D1 binding. The configuration has no Gemini model, AI Gateway, or secret integration. Do not treat this Worker as the D1-backed architecture described in [context/ARCHITECTURE.md](../context/ARCHITECTURE.md).
-
-Before deploying a backend, implement and test the D1 binding and schema, reconcile the Worker with ADR-002, and verify the frontend API URL and authorization requirements. Keep API keys in the provider's secret store, never in the repository.
+The opt-in form only displays a JSON snippet in the browser. It does not send
+the form data, write to the directory, or enroll anyone. No approved private
+handoff is configured, so do not enter real details.
 
 ## Local preview
 
@@ -19,8 +27,5 @@ From the repository root:
 3. Run `python3 -m http.server 8000`.
 4. Open `http://localhost:8000`.
 
-The local static server has no `/entries` API route. The page falls back to browser `localStorage`; a failed API save still shows an error because this fallback is only for the single-browser prototype.
-
-## Wrangler version
-
-Wrangler is not installed as a package dependency. If the Worker is ever deployed, run it pinned with `npx wrangler@4.159.0 <command>` (version checked 2026-11-09), not an unpinned `npx wrangler`. Upgrade deliberately by changing this version here and in `context/AGENTS.md` after reading the release notes.
+The preview loads the checked-in JSON asset and performs search in the browser.
+There is no API or browser-storage fallback.

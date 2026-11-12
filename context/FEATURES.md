@@ -57,12 +57,11 @@ F-04 adds a small, static guide to typical work by line of business, alongside t
 - Profiles are fictional. Do not enter real employee data in the demo form.
 - No approved private opt-in or opt-out process is currently available.
 - The organization must make clear that a conversation is not a formal transfer request and carries no negative standing impact.
-No real-user test has been completed. Automated checks with fictional profiles verify the search and snippet behavior, not real employee matching.
+No real-user test has been completed yet. Automated checks with fictional profiles verify the search and snippet behavior, not real employee matching.
 
 ## AI assistance
 
-AI assisted with the static-directory implementation and documentation. I
-reviewed the changes against the repository and tested the app and curated
+AI assisted with the static-directory implementation and documentation. I reviewed the changes against the repository and tested the app and curated
 data. The static app makes no Worker or server requests; its trust boundary is
 documented in [ARCHITECTURE.md](ARCHITECTURE.md) and
 [ADR-002](../docs/ADR-002.md). The checked-in profiles are fictional.

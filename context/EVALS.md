@@ -1,13 +1,13 @@
 # Evals
 
-## 1. Current risk
+## 1. RAT statement
 
 The riskiest assumption is that a curated static directory can help an intern
 find someone willing to talk. Current profiles are fictional, so automated
 tests measure search behavior and interface reliability, not real employee
 matching.
 
-## 2. Historical prediction stake (2026-09-28)
+## 2. Prediction Stake (2026-09-28, 20:40 EDT)
 
 - **Tight:** At least 3 of 4 F-04 EARS rows will pass on bolt.new's first
   integrated output.
@@ -38,7 +38,7 @@ matching.
 | F-04-4: Guide selection keeps both areas available. | Test + manual | `evals/f04-guide.test.js`; browser check |
 | F-04-5: Guide selection does not change searchable directory data. | Test | `evals/f04-guide.test.js` |
 
-## 4. Historical error-analysis log
+## 4. Error-analysis log
 
 | Failure | Count | Source | Category |
 |---|---:|---|---|

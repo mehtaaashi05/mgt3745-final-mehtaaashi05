@@ -2,7 +2,7 @@
 
 **One sentence:** This static prototype lets interns search fictional curated profiles and explore example line-of-business guides; its opt-in form only prepares a local JSON snippet.
 
-**Deployed URL:** Pending. GitHub Pages deployment must succeed before a public URL is listed here.
+**Deployed URL:** [Deployed Build](https://mehtaaashi05.github.io/mgt3745-final-mehtaaashi05/)
 
 **Status:** Static JSON search and local request-snippet preview work locally. The form does not submit or publish requests. Profiles are fictional; no approved private opt-in or opt-out channel exists, so do not enter real employee data.
 

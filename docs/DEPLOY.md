@@ -3,9 +3,9 @@
 ## Static site
 
 The site has no application server. When changes reach `main`, the GitHub Actions workflow runs `npm test` and, if the tests pass, publishes `index.html`,
-`app.js`, `styles.css`, and `data/directory.json` to GitHub Pages. The deployment workflow must complete successfully before the public URL is added to the [README](../README.md). If deployment fails, check that GitHub Pages is enabled with **GitHub Actions** as the build and deployment source.
+`app.js`, `styles.css`, and `data/directory.json` to GitHub Pages. GitHub Pages is configured to use **GitHub Actions** as the build and deployment source.
 
-The first Pages deployment attempt ([workflow run 43116196106](https://github.com/mehtaaashi05/mgt3745-final-mehtaaashi05/actions/runs/43116196106)) built and uploaded the artifact, but deployment failed with HTTP 404. The action advised enabling GitHub Pages. The repository setting must be checked and, if needed, set to **GitHub Actions** before retrying; the public deployment is still unverified.
+The first Pages deployment attempt ([workflow run 43116196106](https://github.com/mehtaaashi05/mgt3745-final-mehtaaashi05/actions/runs/43116196106)) built and uploaded the artifact, but deployment failed with HTTP 404 because Pages was not enabled. Pages was subsequently enabled, and the deployment workflow completed successfully on `main` in [workflow run 43132898973](https://github.com/mehtaaashi05/mgt3745-final-mehtaaashi05/actions/runs/43132898973): both the test/build and deploy jobs passed. The published site at [https://mehtaaashi05.github.io/mgt3745-final-mehtaaashi05/](https://mehtaaashi05.github.io/mgt3745-final-mehtaaashi05/) was verified to respond with HTTP 200 on November 11, 2026.
 
 The JSON file is public to everyone who can access the site and repository. Only fictional sample records are included. Do not publish real employee details without explicit consent, organizational approval, and an approved private intake and opt-out process.
 

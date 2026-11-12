@@ -14,10 +14,6 @@
   box-sizing: border-box;
 }
 
-[hidden] {
-  display: none !important;
-}
-
 body {
   margin: 0;
   background: var(--color-background);
@@ -89,11 +85,6 @@ textarea {
   margin-bottom: calc(var(--space-unit) * 1.5);
 }
 
-input[type="checkbox"] {
-  width: auto;
-  margin: 0;
-}
-
 input:focus,
 textarea:focus,
 button:focus {
@@ -112,6 +103,13 @@ button {
 
 button:hover {
   filter: brightness(1.05);
+}
+
+button.remove-button {
+  background: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  padding: calc(var(--space-unit) * 0.8) var(--space-unit);
 }
 
 .status {
@@ -154,26 +152,6 @@ button:hover {
 
 .directory-summary p {
   margin: calc(var(--space-unit) * 0.5) 0 0;
-}
-
-.empty-state {
-  border-top: 1px solid rgba(5, 30, 57, 0.15);
-  padding: var(--space-unit) 0;
-}
-
-.data-notice {
-  border-left: calc(var(--space-unit) / 2) solid var(--color-accent);
-  padding-left: var(--space-unit);
-}
-
-.opt-in-panel {
-  margin-top: calc(var(--space-unit) * 3);
-}
-
-.consent-label {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-unit);
 }
 
 .guide-nav {

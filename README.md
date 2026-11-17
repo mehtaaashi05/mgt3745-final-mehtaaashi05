@@ -45,6 +45,9 @@ Then open http://localhost:8000.
 | Self-review with Homogenization Check | [docs/SELF-REVIEW.md](docs/SELF-REVIEW.md) |
 | Sourcing Audit | [docs/SOURCING-AUDIT.md](docs/SOURCING-AUDIT.md) |
 
+## Dating note
+This repository was created from the course template on 2026-11-02, with earlier project work brought in by the initial commit, so its git history starts then. The RAT and Prediction Stake in `context/EVALS.md` are dated 2026-09-28, before the F-04 generation on 2026-09-30, but this repository's history cannot independently show that. If true: The Stake text was edited on 2026-11-11 when the architecture changed to static curated JSON; see commit `497619d`.
+
 ## AI Use
 
 Historical F-04 drafts from bolt.new and Google AI Studio were reviewed and edited in the workspace; their extra packages were not retained. GitHub Copilot assisted with the static-directory implementation and documentation. These tools are not runtime dependencies. See the [delegation log](docs/DDR-LOG.md) and [Sourcing Audit](docs/SOURCING-AUDIT.md).
